@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/BAT NOICE2.mp3-251af4297866a7108e3c6c5457b74c03.mp3str"
+
+[deps]
+
+source_file="res://audio/BAT NOICE2.mp3"
+dest_files=[ "res://.import/BAT NOICE2.mp3-251af4297866a7108e3c6c5457b74c03.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

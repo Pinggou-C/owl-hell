@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://player/player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://owl/owl_big.tscn" type="PackedScene" id=2]
+
+[sub_resource type="Shader" id=4]
+code = "shader_type canvas_item;
+
+uniform float saturation;
+
+void fragment() {
+    vec4 tex_color = texture(TEXTURE, UV);
+
+    COLOR.rgb = mix(vec3(dot(tex_color.rgb, vec3(0.299, 0.587, 0.114))), tex_color.rgb, saturation);
+	COLOR.a = tex_color.a;
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = SubResource( 4 )
+shader_param/saturation = 0.1
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 14.5, 127 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 51, 851 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 1756.75, 10 )
+
+[node name="world" type="Node2D"]
+material = SubResource( 5 )
+
+[node name="player" parent="." instance=ExtResource( 1 )]
+use_parent_material = true
+position = Vector2( 1267, 812 )
+z_index = 4096
+dashspeed = 100000
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+use_parent_material = true
+position = Vector2( 339, 105 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 0, 59 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( -435, 693 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 2493, 712 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 1320.25, -144 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 903, 1555 )
+shape = SubResource( 3 )
+
+[node name="owl_big2" parent="." instance=ExtResource( 2 )]
+position = Vector2( 2259, 546 )

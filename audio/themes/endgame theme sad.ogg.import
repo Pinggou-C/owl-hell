@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/endgame theme sad.ogg-e1a9d9cfc296fbbee21af95c727caa6a.oggstr"
+
+[deps]
+
+source_file="res://audio/themes/endgame theme sad.ogg"
+dest_files=[ "res://.import/endgame theme sad.ogg-e1a9d9cfc296fbbee21af95c727caa6a.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

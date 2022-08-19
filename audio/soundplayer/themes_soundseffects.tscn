@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://audio/themes/endgame theme horror.ogg" type="AudioStream" id=1]
+[ext_resource path="res://audio/themes/engame theme normal.ogg" type="AudioStream" id=2]
+[ext_resource path="res://audio/themes/endgame theme happy.ogg" type="AudioStream" id=3]
+[ext_resource path="res://audio/themes/endgame theme sad.ogg" type="AudioStream" id=4]
+[ext_resource path="res://audio/themes/music 1-.ogg" type="AudioStream" id=5]
+[ext_resource path="res://audio/themes/music 1.ogg" type="AudioStream" id=6]
+[ext_resource path="res://audio/soundplayer/themes&soundseffects.gd" type="Script" id=7]
+
+[node name="themes&soundseffects" type="Node"]
+pause_mode = 2
+script = ExtResource( 7 )
+
+[node name="endgamenormal" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 2 )
+mix_target = 1
+
+[node name="endgamehorror" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+mix_target = 1
+
+[node name="endgamesad" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+mix_target = 1
+
+[node name="endgamehappy" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+mix_target = 1
+
+[node name="midgame horror" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="midgame sad" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="midgame alone" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="midgame normal" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="startgame horror" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="startgame sad" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="startgame alone" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="startgame normal" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
+
+[node name="another" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+mix_target = 1
+
+[node name="another2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+pitch_scale = 0.8
+mix_target = 1
+
+[node name="shoptheme" type="AudioStreamPlayer" parent="."]
+
+[node name="Tween" type="Tween" parent="."]
+[connection signal="tween_completed" from="Tween" to="." method="_on_Tween_tween_completed"]

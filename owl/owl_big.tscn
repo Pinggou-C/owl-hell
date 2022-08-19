@@ -1,0 +1,525 @@
+[gd_scene load_steps=101 format=2]
+
+[ext_resource path="res://owl/owl_big.gd" type="Script" id=1]
+[ext_resource path="res://owl/AnimationTree.gd" type="Script" id=2]
+[ext_resource path="res://audio/effects/heavy stone 4.wav" type="AudioStream" id=3]
+[ext_resource path="res://audio/effects/land.wav" type="AudioStream" id=4]
+[ext_resource path="res://mj-owl.png" type="Texture" id=5]
+
+[sub_resource type="Shader" id=131]
+code = "shader_type canvas_item;
+uniform float saturation;
+uniform float difference: hint_range(-1.0, 1.0) = 0.0;
+
+void fragment() {
+	vec4 tex_color = texture(TEXTURE, UV);
+	COLOR.rgb = mix(vec3(dot(tex_color.rgb, vec3(0.299, 0.587, 0.114))), tex_color.rgb, saturation) - vec3(difference);
+	COLOR.a = tex_color.a;
+}
+
+"
+
+[sub_resource type="ShaderMaterial" id=132]
+shader = SubResource( 131 )
+shader_param/saturation = 0.0
+shader_param/difference = 0.0
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 27.0
+height = 56.0
+
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 64.0
+height = 124.0
+
+[sub_resource type="AnimationNodeStateMachine" id=84]
+
+[sub_resource type="AnimationNodeAnimation" id=55]
+animation = "bomb"
+
+[sub_resource type="AnimationNodeStateMachine" id=85]
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "currupt_death"
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "currupt_start"
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "death"
+
+[sub_resource type="AnimationNodeStateMachine" id=54]
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "feather"
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "fly_up"
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "idle"
+
+[sub_resource type="AnimationNodeAnimation" id=9]
+animation = "land"
+
+[sub_resource type="AnimationNodeStateMachine" id=86]
+
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "neckattack"
+
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "puke"
+
+[sub_resource type="AnimationNodeStateMachine" id=87]
+
+[sub_resource type="AnimationNodeAnimation" id=88]
+animation = "screetch"
+
+[sub_resource type="AnimationNodeAnimation" id=89]
+animation = "screetch"
+
+[sub_resource type="AnimationNodeStateMachine" id=90]
+
+[sub_resource type="AnimationNodeStateMachine" id=53]
+
+[sub_resource type="AnimationNodeAnimation" id=12]
+animation = "start"
+
+[sub_resource type="AnimationNodeAnimation" id=57]
+animation = "teleport"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=15]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=16]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=18]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=67]
+advance_condition = "dead"
+priority = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=68]
+advance_condition = "dead"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=69]
+advance_condition = "dead"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=70]
+advance_condition = "dead"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=71]
+advance_condition = "dead"
+priority = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=73]
+advance_condition = "dead"
+priority = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=74]
+advance_condition = "not_corrupt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=75]
+advance_condition = "corrupt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=78]
+advance_condition = "corrupt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=79]
+advance_condition = "not_currupt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=91]
+advance_condition = "Far"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=92]
+advance_condition = "far"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=93]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=94]
+advance_condition = "attack"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=95]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=96]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=97]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=98]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=99]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=100]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=101]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=102]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=103]
+advance_condition = "dead"
+priority = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=104]
+advance_condition = "dead"
+priority = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=105]
+advance_condition = "dead"
+priority = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=106]
+advance_condition = "corrupt"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=107]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=108]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=109]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=110]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=111]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=112]
+switch_mode = 2
+advance_condition = "sight"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=113]
+switch_mode = 2
+advance_condition = "sight"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=114]
+switch_mode = 2
+advance_condition = "corrupt"
+
+[sub_resource type="AnimationNodeStateMachine" id=38]
+states/attack/node = SubResource( 84 )
+states/attack/position = Vector2( 330, -113.791 )
+states/bomb/node = SubResource( 55 )
+states/bomb/position = Vector2( 474, 345.82 )
+states/close/node = SubResource( 85 )
+states/close/position = Vector2( 117, -52.7911 )
+states/currupt_death/node = SubResource( 3 )
+states/currupt_death/position = Vector2( 564, 694.82 )
+states/currupt_start/node = SubResource( 4 )
+states/currupt_start/position = Vector2( 117, -258.18 )
+states/death/node = SubResource( 5 )
+states/death/position = Vector2( 918, 694.82 )
+states/die/node = SubResource( 54 )
+states/die/position = Vector2( 752, 583.82 )
+states/feather/node = SubResource( 6 )
+states/feather/position = Vector2( 257, 345.82 )
+states/fly_up/node = SubResource( 7 )
+states/fly_up/position = Vector2( 1184, -330.791 )
+states/idle/node = SubResource( 8 )
+states/idle/position = Vector2( 752, -159.18 )
+states/land/node = SubResource( 9 )
+states/land/position = Vector2( 1041, -258.18 )
+states/move/node = SubResource( 86 )
+states/move/position = Vector2( 752, -292.791 )
+states/neckattack/node = SubResource( 10 )
+states/neckattack/position = Vector2( 682, 345.82 )
+states/puke/node = SubResource( 11 )
+states/puke/position = Vector2( -99, 345.82 )
+states/range/node = SubResource( 87 )
+states/range/position = Vector2( 501.222, -52.7911 )
+states/screetch/node = SubResource( 89 )
+states/screetch/position = Vector2( -58.7783, 103.209 )
+"states/screetch 2/node" = SubResource( 88 )
+"states/screetch 2/position" = Vector2( 555.222, 103.209 )
+states/sight/node = SubResource( 90 )
+states/sight/position = Vector2( 564, 253.392 )
+"states/start 2/node" = SubResource( 53 )
+"states/start 2/position" = Vector2( -212.778, -212.18 )
+"states/start_norma;/node" = SubResource( 12 )
+"states/start_norma;/position" = Vector2( 117, -187.18 )
+states/teleport/node = SubResource( 57 )
+states/teleport/position = Vector2( 1184, -159.18 )
+transitions = [ "currupt_start", "idle", SubResource( 15 ), "start_norma;", "idle", SubResource( 16 ), "fly_up", "land", SubResource( 18 ), "puke", "die", SubResource( 67 ), "feather", "die", SubResource( 68 ), "bomb", "die", SubResource( 69 ), "neckattack", "die", SubResource( 70 ), "land", "die", SubResource( 71 ), "idle", "die", SubResource( 73 ), "die", "death", SubResource( 74 ), "die", "currupt_death", SubResource( 75 ), "start 2", "currupt_start", SubResource( 78 ), "start 2", "start_norma;", SubResource( 79 ), "idle", "move", SubResource( 91 ), "attack", "range", SubResource( 92 ), "attack", "close", SubResource( 93 ), "idle", "attack", SubResource( 94 ), "close", "screetch", SubResource( 95 ), "range", "screetch 2", SubResource( 96 ), "close", "feather", SubResource( 97 ), "neckattack", "idle", SubResource( 98 ), "move", "fly_up", SubResource( 99 ), "move", "teleport", SubResource( 100 ), "land", "move", SubResource( 101 ), "teleport", "idle", SubResource( 102 ), "teleport", "die", SubResource( 103 ), "screetch", "die", SubResource( 104 ), "screetch 2", "die", SubResource( 105 ), "screetch 2", "bomb", SubResource( 106 ), "screetch 2", "puke", SubResource( 107 ), "screetch", "puke", SubResource( 108 ), "puke", "idle", SubResource( 109 ), "feather", "idle", SubResource( 110 ), "bomb", "idle", SubResource( 111 ), "close", "sight", SubResource( 112 ), "screetch 2", "sight", SubResource( 113 ), "sight", "neckattack", SubResource( 114 ) ]
+start_node = "start 2"
+graph_offset = Vector2( -522.778, -415.608 )
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=39]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=115]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=116]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=117]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=118]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=119]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=120]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=121]
+
+[sub_resource type="Animation" id=82]
+resource_name = "bomb"
+
+[sub_resource type="Animation" id=40]
+resource_name = "currupt_death"
+
+[sub_resource type="Animation" id=41]
+resource_name = "currupt_start"
+
+[sub_resource type="Animation" id=42]
+resource_name = "death"
+
+[sub_resource type="Animation" id=43]
+resource_name = "feather"
+
+[sub_resource type="Animation" id=44]
+resource_name = "fly_up"
+length = 2.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.4, 0.8, 2.2, 2.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 2.2 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "landing"
+} ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("hurtbox/CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.8, 2.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=45]
+resource_name = "hurt"
+
+[sub_resource type="Animation" id=46]
+resource_name = "idle"
+
+[sub_resource type="Animation" id=47]
+resource_name = "land"
+
+[sub_resource type="Animation" id=48]
+resource_name = "neckattack"
+
+[sub_resource type="Animation" id=49]
+resource_name = "puke"
+
+[sub_resource type="Animation" id=50]
+resource_name = "screetch"
+
+[sub_resource type="Animation" id=51]
+resource_name = "start"
+
+[sub_resource type="Animation" id=52]
+resource_name = "swoop"
+
+[sub_resource type="Animation" id=83]
+resource_name = "teleport"
+
+[sub_resource type="CircleShape2D" id=122]
+radius = 1197.2
+
+[sub_resource type="CircleShape2D" id=123]
+radius = 658.037
+
+[sub_resource type="CircleShape2D" id=124]
+radius = 245.247
+
+[sub_resource type="AtlasTexture" id=126]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 864, 173, 96 )
+
+[sub_resource type="AtlasTexture" id=127]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 384, 173, 96 )
+
+[sub_resource type="AtlasTexture" id=128]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 480, 173, 96 )
+
+[sub_resource type="AtlasTexture" id=129]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 576, 173, 96 )
+
+[sub_resource type="AtlasTexture" id=130]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 768, 173, 96 )
+
+[sub_resource type="SpriteFrames" id=125]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "New Anim",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 126 ), SubResource( 127 ), SubResource( 128 ), SubResource( 129 ), SubResource( 130 ) ],
+"loop": true,
+"name": "fly",
+"speed": 12.0
+} ]
+
+[node name="owl_big" type="KinematicBody2D" groups=["owl"]]
+material = SubResource( 132 )
+collision_layer = 0
+script = ExtResource( 1 )
+
+[node name="wingtip" type="Node2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+shape = SubResource( 2 )
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource( 38 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource( 39 )
+parameters/conditions/Far = false
+parameters/conditions/attack = true
+parameters/conditions/corrupt = true
+parameters/conditions/dead = false
+parameters/conditions/far = true
+parameters/conditions/not_corrupt = false
+parameters/conditions/not_currupt = false
+parameters/conditions/sight = true
+parameters/attack/playback = SubResource( 115 )
+parameters/close/playback = SubResource( 116 )
+parameters/die/playback = SubResource( 117 )
+parameters/move/playback = SubResource( 118 )
+parameters/range/playback = SubResource( 119 )
+parameters/sight/playback = SubResource( 120 )
+"parameters/start 2/playback" = SubResource( 121 )
+script = ExtResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/bomb = SubResource( 82 )
+anims/currupt_death = SubResource( 40 )
+anims/currupt_start = SubResource( 41 )
+anims/death = SubResource( 42 )
+anims/feather = SubResource( 43 )
+anims/fly_up = SubResource( 44 )
+anims/hurt = SubResource( 45 )
+anims/idle = SubResource( 46 )
+anims/land = SubResource( 47 )
+anims/neckattack = SubResource( 48 )
+anims/puke = SubResource( 49 )
+anims/screetch = SubResource( 50 )
+anims/start = SubResource( 51 )
+anims/swoop = SubResource( 52 )
+anims/teleport = SubResource( 83 )
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="range_far" type="Area2D" parent="."]
+collision_layer = 512
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="range_far"]
+shape = SubResource( 122 )
+
+[node name="range_mid" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="range_mid"]
+shape = SubResource( 123 )
+
+[node name="range_close" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="range_close"]
+shape = SubResource( 124 )
+
+[node name="sight" type="RayCast2D" parent="."]
+
+[node name="attackdelay" type="Timer" parent="."]
+
+[node name="attacktime" type="Timer" parent="."]
+one_shot = true
+
+[node name="anim" type="AnimatedSprite" parent="."]
+use_parent_material = true
+scale = Vector2( 3, 3 )
+frames = SubResource( 125 )
+animation = "fly"
+frame = 3
+playing = true
+
+[node name="dash" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
+volume_db = 6.975
+pitch_scale = 1.76
+attenuation = 1.03527
+
+[node name="dash2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
+volume_db = 6.975
+pitch_scale = 1.43
+attenuation = 1.03527
+bus = "New Bus"
+area_mask = 0
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+color = Color( 0.662745, 0.329412, 0.329412, 1 )
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+color = Color( 1, 0, 0, 1 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[connection signal="body_entered" from="hurtbox" to="." method="_on_hurtbox_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="IFRAMES"]
+[connection signal="body_entered" from="range_far" to="." method="farin"]
+[connection signal="body_exited" from="range_far" to="." method="farout"]
+[connection signal="body_entered" from="range_mid" to="." method="midin"]
+[connection signal="body_exited" from="range_mid" to="." method="midout"]
+[connection signal="body_entered" from="range_close" to="." method="closein"]
+[connection signal="body_exited" from="range_close" to="." method="closeout"]
+[connection signal="timeout" from="attackdelay" to="." method="attackdelayend"]
+[connection signal="timeout" from="attacktime" to="." method="attack_end"]

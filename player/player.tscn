@@ -1,0 +1,210 @@
+[gd_scene load_steps=27 format=2]
+
+[ext_resource path="res://player/player.gd" type="Script" id=1]
+[ext_resource path="res://mj-cat-tilesheet.png" type="Texture" id=2]
+[ext_resource path="res://player/Camera2D.gd" type="Script" id=3]
+
+[sub_resource type="CircleShape2D" id=1]
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 13.0
+
+[sub_resource type="Animation" id=3]
+resource_name = "dash"
+length = 0.25
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath("..:dashspeed")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.06, 0.16, 0.25 ),
+"transitions": PoolRealArray( 0.450625, 1.62451, 0.25, 1 ),
+"update": 0,
+"values": [ 15000, 120000, 75000, 5000 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.05 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [ 0.15 ],
+"method": "I_FRAMES"
+} ]
+}
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 18, 96, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 2 )
+region = Rect2( 36, 96, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 2 )
+region = Rect2( 54, 96, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 96, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 120, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 2 )
+region = Rect2( 18, 120, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 2 )
+region = Rect2( 36, 120, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 2 )
+region = Rect2( 54, 120, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 144, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 2 )
+region = Rect2( 18, 144, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 2 )
+region = Rect2( 36, 144, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 2 )
+region = Rect2( 18, 48, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 2 )
+region = Rect2( 36, 48, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 2 )
+region = Rect2( 54, 48, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 48, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 2 )
+region = Rect2( 18, 24, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 2 )
+region = Rect2( 36, 24, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 2 )
+region = Rect2( 54, 24, 18, 24 )
+
+[sub_resource type="AtlasTexture" id=23]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 24, 18, 24 )
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
+"loop": true,
+"name": "back",
+"speed": 4.0
+}, {
+"frames": [ SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ), SubResource( 15 ) ],
+"loop": false,
+"name": "death",
+"speed": 4.0
+}, {
+"frames": [ SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ) ],
+"loop": true,
+"name": "front",
+"speed": 4.0
+}, {
+"frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ) ],
+"loop": true,
+"name": "side",
+"speed": 4.0
+} ]
+
+[node name="player" type="KinematicBody2D" groups=["player"]]
+collision_layer = 512
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+dashspeed = 15000
+
+[node name="collisionbox" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="hurtbox" type="Area2D" parent="." groups=["player"]]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+shape = SubResource( 2 )
+
+[node name="Particles" type="Node2D" parent="."]
+
+[node name="Walk" type="Node2D" parent="Particles"]
+
+[node name="Dash" type="Node2D" parent="Particles"]
+
+[node name="weaponaccess" type="Node2D" parent="."]
+
+[node name="weaponpos" type="Position2D" parent="weaponaccess"]
+
+[node name="weapon_switch" type="Timer" parent="weaponaccess"]
+
+[node name="weapons" type="Node2D" parent="."]
+
+[node name="swingdelay" type="Timer" parent="weapons"]
+one_shot = true
+
+[node name="dash" type="Node2D" parent="."]
+
+[node name="dash" type="Timer" parent="dash"]
+process_mode = 0
+wait_time = 18.968
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="dash"]
+anims/dash = SubResource( 3 )
+
+[node name="dash_delay" type="Timer" parent="dash"]
+one_shot = true
+
+[node name="I_FRAMES" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 3, 3 )
+frames = SubResource( 4 )
+animation = "front"
+frame = 1
+playing = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 1.5, 1.5 )
+script = ExtResource( 3 )
+
+[connection signal="body_entered" from="hurtbox" to="." method="_on_hurtbox_body_entered"]
+[connection signal="timeout" from="weaponaccess/weapon_switch" to="." method="_on_weapon_switch_timeout"]
+[connection signal="timeout" from="weapons/swingdelay" to="." method="_on_swingdelay_timeout"]
+[connection signal="timeout" from="dash/dash" to="." method="dash_end"]
+[connection signal="timeout" from="dash/dash_delay" to="." method="dash_delay_timeout"]
+[connection signal="timeout" from="I_FRAMES" to="." method="I_frames_end"]
