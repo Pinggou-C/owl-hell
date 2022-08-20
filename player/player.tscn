@@ -4,7 +4,8 @@
 [ext_resource path="res://mj-cat-tilesheet.png" type="Texture" id=2]
 [ext_resource path="res://player/Camera2D.gd" type="Script" id=3]
 
-[sub_resource type="CircleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=24]
+extents = Vector2( 25.5, 1.5 )
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.0
@@ -139,7 +140,7 @@ animations = [ {
 "speed": 4.0
 } ]
 
-[node name="player" type="KinematicBody2D" groups=["player"]]
+[node name="player" type="KinematicBody2D" groups=["player", "trueplayer"]]
 collision_layer = 512
 script = ExtResource( 1 )
 __meta__ = {
@@ -148,7 +149,8 @@ __meta__ = {
 dashspeed = 15000
 
 [node name="collisionbox" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
+position = Vector2( 1.5, 33.5 )
+shape = SubResource( 24 )
 
 [node name="hurtbox" type="Area2D" parent="." groups=["player"]]
 collision_layer = 2
@@ -194,12 +196,18 @@ one_shot = true
 scale = Vector2( 3, 3 )
 frames = SubResource( 4 )
 animation = "front"
-frame = 1
+frame = 2
 playing = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 1.5, 1.5 )
+limit_left = -32
+limit_top = -32
+limit_right = 3032
+limit_bottom = 3800
+limit_smoothed = true
+smoothing_enabled = true
+smoothing_speed = 10.0
 script = ExtResource( 3 )
 
 [connection signal="body_entered" from="hurtbox" to="." method="_on_hurtbox_body_entered"]

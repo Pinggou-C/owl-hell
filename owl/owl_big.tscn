@@ -8,12 +8,13 @@
 
 [sub_resource type="Shader" id=131]
 code = "shader_type canvas_item;
+uniform vec3 color;
 uniform float saturation;
 uniform float difference: hint_range(-1.0, 1.0) = 0.0;
 
 void fragment() {
 	vec4 tex_color = texture(TEXTURE, UV);
-	COLOR.rgb = mix(vec3(dot(tex_color.rgb, vec3(0.299, 0.587, 0.114))), tex_color.rgb, saturation) - vec3(difference);
+	COLOR.rgb =( mix(vec3(dot(tex_color.rgb, vec3(0.299, 0.587, 0.114))), tex_color.rgb, saturation) - vec3(difference)) * color;
 	COLOR.a = tex_color.a;
 }
 
@@ -21,7 +22,8 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id=132]
 shader = SubResource( 131 )
-shader_param/saturation = 0.0
+shader_param/color = Vector3( 1, 1, 1 )
+shader_param/saturation = 1.0
 shader_param/difference = 0.0
 
 [sub_resource type="CapsuleShape2D" id=1]
@@ -29,8 +31,8 @@ radius = 27.0
 height = 56.0
 
 [sub_resource type="CapsuleShape2D" id=2]
-radius = 163.0
-height = 124.0
+radius = 104.0
+height = 108.0
 
 [sub_resource type="AnimationNodeStateMachine" id=84]
 
@@ -286,7 +288,7 @@ resource_name = "feather"
 
 [sub_resource type="Animation" id=44]
 resource_name = "fly_up"
-length = 2.5
+length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
 tracks/0/interp = 1
@@ -294,10 +296,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.4, 0.8, 2.2, 2.5 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"times": PoolRealArray( 0.2, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/1/type = "method"
 tracks/1/path = NodePath(".")
@@ -306,12 +308,9 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 2.2 ),
-"transitions": PoolRealArray( 1 ),
-"values": [ {
-"args": [  ],
-"method": "landing"
-} ]
+"times": PoolRealArray(  ),
+"transitions": PoolRealArray(  ),
+"values": [  ]
 }
 tracks/2/type = "value"
 tracks/2/path = NodePath("hurtbox/CollisionShape2D:disabled")
@@ -320,10 +319,10 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0.8, 2.2 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ true, false ]
+"values": [ true ]
 }
 
 [sub_resource type="Animation" id=45]
@@ -334,6 +333,44 @@ resource_name = "idle"
 
 [sub_resource type="Animation" id=47]
 resource_name = "land"
+tracks/0/type = "value"
+tracks/0/path = NodePath("CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "landing"
+} ]
+}
 
 [sub_resource type="Animation" id=48]
 resource_name = "neckattack"
@@ -360,7 +397,7 @@ radius = 1197.2
 radius = 658.037
 
 [sub_resource type="CircleShape2D" id=124]
-radius = 245.247
+radius = 442.408
 
 [sub_resource type="AtlasTexture" id=126]
 atlas = ExtResource( 5 )
@@ -409,6 +446,7 @@ shape = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
 shape = SubResource( 2 )
+disabled = true
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource( 38 )
@@ -487,7 +525,7 @@ use_parent_material = true
 scale = Vector2( 3, 3 )
 frames = SubResource( 125 )
 animation = "fly"
-frame = 1
+frame = 2
 playing = true
 
 [node name="dash" type="AudioStreamPlayer2D" parent="."]
@@ -516,6 +554,14 @@ color = Color( 1, 0, 0, 1 )
 
 [node name="Tween" type="Tween" parent="."]
 
+[node name="waittimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Tween2" type="Tween" parent="."]
+
+[node name="short" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="body_entered" from="hurtbox" to="." method="_on_hurtbox_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="IFRAMES"]
 [connection signal="body_entered" from="range_far" to="." method="farin"]
@@ -526,3 +572,5 @@ color = Color( 1, 0, 0, 1 )
 [connection signal="body_exited" from="range_close" to="." method="closeout"]
 [connection signal="timeout" from="attackdelay" to="." method="attackdelayend"]
 [connection signal="timeout" from="attacktime" to="." method="attack_end"]
+[connection signal="timeout" from="waittimer" to="." method="_on_waittimer_timeout"]
+[connection signal="timeout" from="short" to="." method="_on_waittimer_timeout"]

@@ -31,6 +31,8 @@ var is_attacking = false
 const weapon_switch_delay = 0.25
 var switching_weapons = false
 
+#[origin, force]
+var push = null
 
 #weapons
 onready var weapon1 = preload("res://player/weapons/sword.tscn")
@@ -56,27 +58,33 @@ func _ready():
 		wap.player = self
 		if i != current_weapon_nr:
 			wap.visible = false
-			print(wap)
 
 
 
 #physics
 func _physics_process(delta):
 	$weapons.look_at(get_global_mouse_position())
+	var force = Vector2.ZERO
+	if push != null:
+		var dir = ( push[0].get_global_position() - self.get_global_position() ).normalized()
+		var dis = get_global_position().distance_to(push[0].get_global_position())
+		var dist = 0
+		if dis < 500:
+			dist = (600 -dis)/500 +0.05
+		force = dir * dist * push[1]
+		
 	if state != 'walk':
 		if $AnimatedSprite.playing ==true:
 			$AnimatedSprite.stop()
 	if state == "walk":
-		velocity = direction.normalized() * speed * delta
+		velocity = (direction.normalized() * speed - force) * delta 
 		velocity = move_and_slide(velocity)
 		if velocity.y >0:
-			print(2)
 			if $AnimatedSprite.animation == "back" || ($AnimatedSprite.animation== "front"&&$AnimatedSprite.playing ==false):
 				if $AnimatedSprite.playing ==true:
 					$AnimatedSprite.stop()
 				$AnimatedSprite.play("front")
 		if velocity.y <0:
-			print(3)
 			if $AnimatedSprite.animation == "front"||($AnimatedSprite.animation== "back"&&$AnimatedSprite.playing ==false):
 				if $AnimatedSprite.playing ==true:
 					$AnimatedSprite.stop()
@@ -85,7 +93,10 @@ func _physics_process(delta):
 		pass
 	elif state == "dash":
 		#velocity -= acceleration * delta * direction
-		velocity = direction.normalized() * dashspeed * delta
+		velocity = (direction.normalized() * dashspeed - force) * delta
+		velocity = move_and_slide(velocity)
+	elif push != null:
+		velocity =  -force * delta
 		velocity = move_and_slide(velocity)
 
 
@@ -133,15 +144,11 @@ func _input(event):
 		if !switching_weapons && !is_attacking:
 			var wapsize = weapons.size()
 			if Input.is_action_just_pressed("1"):
-				print('1')
 				if current_weapon_nr != 1:
-					print('1.1')
 					current_weapon_nr = 1
 					switching_weapons = true
 			elif Input.is_action_just_pressed("2"):
-				print('2')
 				if current_weapon_nr != 2:
-					print('2.1')
 					current_weapon_nr = 2
 					switching_weapons = true
 			elif wapsize > 2:
@@ -180,7 +187,6 @@ func _input(event):
 												current_weapon_nr = 9
 												switching_weapons = true
 			if switching_weapons == true:
-				print(0.1)
 				current_weapon = $weapons.get_child(current_weapon_nr).named
 				$weapons.get_child(oldweapon_nr).visible = false
 				$weapons.get_child(current_weapon_nr).visible = true
@@ -288,4 +294,7 @@ func I_frames_end():
 
 
 
-
+func push(origin, force):
+	push = [origin, force]
+func stop_push():
+	push = null

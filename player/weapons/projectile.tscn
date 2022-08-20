@@ -23,5 +23,9 @@ shape = SubResource( 2 )
 
 [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
 
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]
