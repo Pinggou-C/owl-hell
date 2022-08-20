@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 #curruption 0-8
-var corruption = 8
+var corruption = 0
 const max_hp = 1000
 var hp = 1000
 const THRESHOLD = 7
@@ -27,7 +27,7 @@ onready var ghost = preload("res://owl/ghostowl.tscn")
 #attacks
 var patterns = {'start':['fly','swoop'],
  'corruptstart':['fly','swoop', 'bomb'],
- 'high_hp':['swoop', 'swoop','swoop'],
+ 'high_hp':['wait', 'swoop','swoop'],
  'high_hp2':['screech', 'wait', 'fly', 'missile', 'wait'],
  'mid_hp':['screech', 'missile', 'fly', 'conferge'],
  'mid_hp2':['screech', 'swoop', 'wait', 'screech', 'cross'],
@@ -160,7 +160,7 @@ func move(pattern):
 	print(pattern.size()) 
 	print(pattern_nr)
 	if attacking ==false:
-		if !pattern.size() == pattern_nr:
+		if !pattern.size() <= pattern_nr:
 			var attack = pattern[pattern_nr]
 			print(attack)
 			pattern_nr += 1
@@ -212,113 +212,116 @@ func swoop():
 	$Tween.interpolate_property($anim, 'modulate', modulate, Color(1, 1, 1, 0), 1, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	$Tween.start()
 	$hurtbox/CollisionShape2D.disabled = true
-	var number = rng.randi_range(4, 6) + round(corruption*0.33)
+	var number = ceil(rng.randi_range(10, 14) + round(8 * pow(corruption, 2)/64*2))
 	var lastx = []
 	var lasty = []
+	var aimed = ceil(number / 2  + 8 * pow(corruption, 2) / 64 * 2) + 1
+	var unaimed = floor(number / 2  + 8 * pow(corruption, 2) / 64 * 2) - 1
+	var xs = ceil(number / 2  + 8 * pow(corruption, 2) / 64 * 2) + 1
+	var ys = ceil(number / 2  + 8 * pow(corruption, 2) / 64 * 2 ) + 1
 	for i in number:
-		var aimed = ceil(number/2)
-		var unaimed = floor(number/2) -1
-		yield(get_tree().create_timer(0.15 - 0.075*(corruption/8)), "timeout")
+		var dott
+		yield(get_tree().create_timer(0.3 - 0.15*(corruption/8)), "timeout")
 		var axis
-		if rng.randi_range(0, 1) == 1:axis = 'y'; else:axis = 'x'
+		if rng.randi_range(0, 1) == 1:
+			axis = 'y'
+			if ys == 0: 
+				axis = 'y'
+				xs -=1
+			else:
+				ys-=1
+		else:
+			axis = 'x'
+			if xs == 0: 
+				axis = 'y'
+				ys -=1
+			else:
+				xs-=1
+			
+		
 		var startpos = Vector2.ZERO
 		var endpos = Vector2.ZERO
 		var dir = rng.randi_range(0, 1)*2 -1
-		var lenth = rng.randi_range(4, 15)*300
+		var lenth = rng.randi_range(4, 10)*300
 		if (rng.randi_range(0,1) == 1 && aimed > 0 )|| unaimed == 0:
 			aimed -=1
 			if axis == 'y':
-				startpos.x = stepify(player.global_position.x, 300) + rng.randi_range(1, (ceil(lenth/300-6)))*-dir*300
-				startpos.y = stepify(player.global_position.y, 300) + rng.randi_range(-1, 1)*300 
+				dott = Vector2(1, 0)
+				startpos.x = stepify(player.global_position.x, 200) + rng.randi_range(1, (ceil(lenth/200-9)))*-dir*200
+				startpos.y = stepify(player.global_position.y, 200) + rng.randi_range(-2, 2)*200 
 				while lasty.has(startpos.y):
-					startpos.y += (rng.randi_range(0, 1)*2 -1)*300
-				startpos += player.direction * 100
+					startpos.y += (rng.randi_range(0, 1)*2 -1)*200
+				if rng.randi_range(0, 3) != 0:
+					startpos += player.direction * 200 * rng.randi_range(0, 3)
 				endpos = startpos + Vector2(lenth, 0)*dir
-				if startpos.x < 0:
-					startpos.x -= startpos.x
-					endpos.x -= startpos.x
-				elif startpos.x > 3000:
-					startpos.x -= startpos.x-3000
-					endpos.x -= startpos.x-3000
-				if endpos.x <0: 
-					startpos.x -= endpos.x
-					endpos.x -= endpos.x
-				elif endpos.x> 3000:
-					startpos.x -= endpos.x-3000
-					endpos.x -= endpos.x-3000
 			else:
-				startpos.y = stepify(player.global_position.y, 300) + rng.randi_range(1, (ceil(lenth/300-6)))*-dir*300
-				startpos.x = stepify(player.global_position.x, 300) + rng.randi_range(-1, 1)*300
-				startpos += player.direction * 100
+				dott = Vector2(0, 1)
+				startpos.y = stepify(player.global_position.y, 200) + rng.randi_range(1, (ceil(lenth/200-9)))*-dir*200
+				startpos.x = stepify(player.global_position.x, 200) + rng.randi_range(-2, 2)*200
+				if rng.randi_range(0, 3) != 0:
+					startpos += player.direction * 200* rng.randi_range(0, 3)
 				while lastx.has(startpos.x):
-					startpos.x += (rng.randi_range(0, 1)*2 -1)*300
+					startpos.x += (rng.randi_range(0, 1)*2 -1)*200
 				endpos = startpos + Vector2(0, lenth)*dir
-				if startpos.y < 0:
-					startpos.y -= startpos.y
-					endpos.y -= startpos.y
-				elif startpos.y > 3000:
-					startpos.y -= startpos.y-3000
-					endpos.y -= startpos.y-3000
-				if endpos.y <0: 
-					startpos.y -= endpos.y
-					endpos.y -= endpos.y
-				elif endpos.y> 3000:
-					startpos.y -= endpos.y-3000
-					endpos.y -= endpos.y-3000
 		else:
 			unaimed -=1
 			if axis == 'y':
-				startpos.x = stepify(player.global_position.x, 300) + rng.randi_range(2, (ceil(lenth/300-5)))*-dir*300
-				startpos.y = stepify(player.global_position.y, 300) + rng.randi_range(2, (ceil(lenth/300-5)))*-dir*300
+				dott = Vector2(1, 0)
+				startpos.x = stepify(player.global_position.x, 200) + rng.randi_range(2, (ceil(lenth/200-7)))*-dir*200
+				startpos.y = stepify(player.global_position.y, 200) + rng.randi_range(2, (ceil(lenth/200-7)))*-dir*200
 				while lasty.has(startpos.y):
-					startpos.y += (rng.randi_range(0, 1)*2 -1)*300
+					startpos.y += (rng.randi_range(0, 1)*2 -1)*200
 				endpos = startpos + Vector2(lenth, 0)*dir
-				if startpos.x < 0:
-					startpos.x -= startpos.x
-					endpos.x -= startpos.x
-				elif startpos.x > 3000:
-					startpos.x -= startpos.x-3000
-					endpos.x -= startpos.x-3000
-				if endpos.x <0: 
-					startpos.x -= endpos.x
-					endpos.x -= endpos.x
-				elif endpos.x> 3000:
-					startpos.x -= endpos.x-3000
-					endpos.x -= endpos.x-3000
 			else:
-				startpos.y = stepify(player.global_position.y, 300) + rng.randi_range(2, (ceil(lenth/300-5)))*-dir*300
-				startpos.x = stepify(player.global_position.x, 300) + rng.randi_range(2, (ceil(lenth/300-5)))*-dir*300
+				dott = Vector2(0, 1)
+				startpos.y = stepify(player.global_position.y, 200) + rng.randi_range(2, (ceil(lenth/200-7)))*-dir*200
+				startpos.x = stepify(player.global_position.x, 200) + rng.randi_range(2, (ceil(lenth/200-7)))*-dir*200
 				while lastx.has(startpos.x):
-					startpos.x += (rng.randi_range(0, 1)*2 -1)*300
+					startpos.x += (rng.randi_range(0, 1)*2 -1)*200
 				endpos = startpos + Vector2(0, lenth)*dir
-				if startpos.y < 0:
-					startpos.y -= startpos.y
-					endpos.y -= startpos.y
-				elif startpos.y > 3000:
-					startpos.y -= startpos.y-3000
-					endpos.y -= startpos.y-3000
-				if endpos.y <0: 
-					startpos.y -= endpos.y
-					endpos.y -= endpos.y
-				elif endpos.y> 3000:
-					startpos.y -= endpos.y-3000
-					endpos.y -= endpos.y-3000
-		endpos.x = stepify(endpos.x, 300)
-		endpos.y = stepify(endpos.y, 300)
-		startpos.x = stepify(startpos.x, 300)
-		startpos.y = stepify(startpos.y, 300)
+		if startpos.x < 0:
+			endpos.x -= startpos.x
+			startpos.x -= startpos.x
+		elif startpos.x > 3000:
+			endpos.x -= startpos.x-3000
+			startpos.x -= startpos.x-3000
+		if endpos.x <0: 
+			startpos.x -= endpos.x
+			endpos.x -= endpos.x
+		elif endpos.x> 3000:
+			startpos.x -= endpos.x-3000
+			endpos.x -= endpos.x-3000
+		if startpos.y < 0:
+			endpos.y -= startpos.y
+			startpos.y -= startpos.y
+		elif startpos.y > 3000:
+			endpos.y -= startpos.y-3000
+			startpos.y -= startpos.y-3000
+		if endpos.y <0: 
+			startpos.y -= endpos.y
+			endpos.y -= endpos.y
+		elif endpos.y> 3000:
+			startpos.y -= endpos.y-3000
+			endpos.y -= endpos.y-3000
+		endpos.x = stepify(endpos.x, 200)
+		endpos.y = stepify(endpos.y, 200)
+		startpos.x = stepify(startpos.x, 200)
+		startpos.y = stepify(startpos.y, 200)
+		if startpos.y > endpos.y || startpos.x > endpos.x:
+			dott *= -1
 		lasty.append(startpos.y)
 		lastx.append(startpos.x)
-		if lastx.size() > 4:
+		if lastx.size() > 5:
 			lastx.erase(0)
-		if lasty.size() > 4:
+		if lasty.size() > 5:
 			lasty.erase(0)
 		var ined = ind.instance()
 		ined.get_child(0).rect_size = Vector2(lenth, 300)
 		ined.get_child(0).rect_position = Vector2(0, -150)
 		get_parent().add_child(ined)
-		ined.ready(2 + (corruption-8)/8, dir, startpos, endpos, corruption)
-		print(2 + (corruption-8)/8)
+
+		ined.ready(3.0 + (corruption-8)/4, dott, startpos, endpos, corruption)
+		print(3.0 + (corruption-8)/4)
 		ined.global_position = startpos
 		ined.look_at(endpos)
 		$ColorRect2.rect_position = startpos - global_position
@@ -330,7 +333,7 @@ func swoop():
 	yield(get_tree().create_timer(4), "timeout")
 	$Tween.interpolate_property($anim, 'modulate', Color(1, 1, 1, 0), Color(1, 1, 1, 1), 0.6, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	$Tween.start()
-	$hurtbox/CollisionShape2D.disabled = true
+	$hurtbox/CollisionShape2D.disabled = false
 	landing()
 	
 func screech():

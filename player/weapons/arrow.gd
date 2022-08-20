@@ -10,7 +10,7 @@ func summon(sped, dir, dam, initialvel, anim = 'arraw', type = 'player'):
 	direction = dir
 	damage = dam
 	tempvelocity = speed * direction + initialvel
-	print(tempvelocity, speed, direction, initialvel)
+	#print(tempvelocity, speed, direction, initialvel)
 	if type == 'enemy':
 		set_collision_layer_bit(1, false)
 		set_collision_layer_bit(2, true)

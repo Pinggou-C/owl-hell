@@ -29,7 +29,7 @@ radius = 27.0
 height = 56.0
 
 [sub_resource type="CapsuleShape2D" id=2]
-radius = 64.0
+radius = 163.0
 height = 124.0
 
 [sub_resource type="AnimationNodeStateMachine" id=84]
@@ -456,6 +456,7 @@ collision_layer = 512
 collision_mask = 512
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="range_far"]
+visible = false
 shape = SubResource( 122 )
 
 [node name="range_mid" type="Area2D" parent="."]
@@ -463,6 +464,7 @@ collision_layer = 0
 collision_mask = 512
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="range_mid"]
+visible = false
 shape = SubResource( 123 )
 
 [node name="range_close" type="Area2D" parent="."]
@@ -470,6 +472,7 @@ collision_layer = 0
 collision_mask = 512
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="range_close"]
+visible = false
 shape = SubResource( 124 )
 
 [node name="sight" type="RayCast2D" parent="."]
@@ -484,7 +487,7 @@ use_parent_material = true
 scale = Vector2( 3, 3 )
 frames = SubResource( 125 )
 animation = "fly"
-frame = 3
+frame = 1
 playing = true
 
 [node name="dash" type="AudioStreamPlayer2D" parent="."]
