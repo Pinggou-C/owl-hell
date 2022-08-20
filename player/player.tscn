@@ -196,7 +196,6 @@ one_shot = true
 scale = Vector2( 3, 3 )
 frames = SubResource( 4 )
 animation = "front"
-frame = 2
 playing = true
 
 [node name="Camera2D" type="Camera2D" parent="."]

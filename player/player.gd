@@ -5,7 +5,7 @@ const speed = 25000
 const acceleration = 400000
 export(int) var dashspeed = 0
 const dashtime = 0.25
-const dash_delay = 0.666
+const dash_delay = 0.5
 var can_dash = true
 
 #health
@@ -23,7 +23,7 @@ var state = "idle" setget statemachine, getstate
 
 
 #combat
-var weapons = ["shortsword", 'shortbow']
+var weapons = ["shortsword"]
 var current_weapon = "shortsword"
 var current_weapon_nr = 1
 var oldweapon_nr = 1
@@ -147,45 +147,46 @@ func _input(event):
 				if current_weapon_nr != 1:
 					current_weapon_nr = 1
 					switching_weapons = true
-			elif Input.is_action_just_pressed("2"):
-				if current_weapon_nr != 2:
-					current_weapon_nr = 2
-					switching_weapons = true
-			elif wapsize > 2:
-				if Input.is_action_just_pressed("3"):
-					if current_weapon_nr != 3:
-						current_weapon_nr = 3
+			elif wapsize > 1:
+				if Input.is_action_just_pressed("2"):
+					if current_weapon_nr != 2:
+						current_weapon_nr = 2
 						switching_weapons = true
-				elif wapsize > 3:
-					if Input.is_action_just_pressed("4"):
-						if current_weapon_nr != 4:
-							current_weapon_nr = 4
+				elif wapsize > 2:
+					if Input.is_action_just_pressed("3"):
+						if current_weapon_nr != 3:
+							current_weapon_nr = 3
 							switching_weapons = true
-					elif wapsize > 4:
-						if Input.is_action_just_pressed("5"):
-							if current_weapon_nr != 5:
-								current_weapon_nr = 5
+					elif wapsize > 3:
+						if Input.is_action_just_pressed("4"):
+							if current_weapon_nr != 4:
+								current_weapon_nr = 4
 								switching_weapons = true
-						elif wapsize > 5:
-							if Input.is_action_just_pressed("6"):
-								if current_weapon_nr != 6:
-									current_weapon_nr = 6
+						elif wapsize > 4:
+							if Input.is_action_just_pressed("5"):
+								if current_weapon_nr != 5:
+									current_weapon_nr = 5
 									switching_weapons = true
-							elif wapsize > 6:
-								if Input.is_action_just_pressed("7"):
-									if current_weapon_nr != 7:
-										current_weapon_nr = 7
+							elif wapsize > 5:
+								if Input.is_action_just_pressed("6"):
+									if current_weapon_nr != 6:
+										current_weapon_nr = 6
 										switching_weapons = true
-								elif wapsize > 7:
-									if Input.is_action_just_pressed("8"):
-										if current_weapon_nr != 8:
-											current_weapon_nr = 8
+								elif wapsize > 6:
+									if Input.is_action_just_pressed("7"):
+										if current_weapon_nr != 7:
+											current_weapon_nr = 7
 											switching_weapons = true
-									elif wapsize > 8:
-										if Input.is_action_just_pressed("9"):
-											if current_weapon_nr != 9:
-												current_weapon_nr = 9
+									elif wapsize > 7:
+										if Input.is_action_just_pressed("8"):
+											if current_weapon_nr != 8:
+												current_weapon_nr = 8
 												switching_weapons = true
+										elif wapsize > 8:
+											if Input.is_action_just_pressed("9"):
+												if current_weapon_nr != 9:
+													current_weapon_nr = 9
+													switching_weapons = true
 			if switching_weapons == true:
 				current_weapon = $weapons.get_child(current_weapon_nr).named
 				$weapons.get_child(oldweapon_nr).visible = false

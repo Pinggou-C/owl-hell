@@ -10,7 +10,7 @@ var speed = 3000
 func ready(dir, pos, endpos, corruption, start = 0, end = 0):
 	direction = dir
 	endposition = endpos
-	speed = speed + speed*(pow(corruption, 2)/64)*0.5
+	speed = speed + speed*(pow(corruption, 2)/64)*0.25
 	global_position = pos
 	var distance = sqrt(pow(endpos.x - pos.x, 2)+pow(endpos.y - pos.y, 2))
 	if direction.x != 0:

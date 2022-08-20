@@ -5,7 +5,8 @@ var tempvelocity = speed
 var direction = Vector2.ZERO
 var damage
 
-func summon(sped, dir, dam, initialvel, anim = 'arraw', type = 'player'):
+func summon(sped, dir, dam, initialvel, anim = 'arraw', type = 'player', timout = 0):
+	#yield(get_tree().create_timer(timout), "timeout")
 	direction = dir
 	damage = dam
 	tempvelocity = speed
