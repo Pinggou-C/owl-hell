@@ -1,4 +1,4 @@
-[gd_scene load_steps=101 format=2]
+[gd_scene load_steps=102 format=2]
 
 [ext_resource path="res://owl/owl_big.gd" type="Script" id=1]
 [ext_resource path="res://owl/AnimationTree.gd" type="Script" id=2]
@@ -289,6 +289,7 @@ resource_name = "feather"
 [sub_resource type="Animation" id=44]
 resource_name = "fly_up"
 length = 0.5
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
 tracks/0/interp = 1
@@ -296,7 +297,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.2, 0.5 ),
+"times": PoolRealArray( 0.25, 0.45 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
@@ -324,6 +325,30 @@ tracks/2/keys = {
 "update": 1,
 "values": [ true ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 0.5, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.1, 0.8 ), Vector2( 0.5, 1.7 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("anim:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0.1, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, -200 ) ]
+}
 
 [sub_resource type="Animation" id=45]
 resource_name = "hurt"
@@ -333,6 +358,7 @@ resource_name = "idle"
 
 [sub_resource type="Animation" id=47]
 resource_name = "land"
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("CollisionShape2D:disabled")
 tracks/0/interp = 1
@@ -367,6 +393,60 @@ tracks/2/keys = {
 "times": PoolRealArray(  ),
 "transitions": PoolRealArray(  ),
 "values": [  ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.6, 1.7 ), Vector2( 0.6, 1.7 ), Vector2( 1.1, 0.8 ), Vector2( 0.95, 1.05 ), Vector2( 1, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("anim:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.35 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -200 ), Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=133]
+resource_name = "missile"
+length = 0.9
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.2, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1.56917, 1, 0.517632 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.1, 0.8 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "summon_missile"
+} ]
 }
 
 [sub_resource type="Animation" id=48]
@@ -429,10 +509,13 @@ animations = [ {
 "speed": 12.0
 } ]
 
-[node name="owl_big" type="KinematicBody2D" groups=["owl"]]
+[node name="owl_big" type="KinematicBody2D" groups=["enemy", "owl"]]
 material = SubResource( 132 )
 collision_layer = 0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="wingtip" type="Node2D" parent="."]
 
@@ -440,9 +523,12 @@ script = ExtResource( 1 )
 shape = SubResource( 1 )
 
 [node name="hurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
 shape = SubResource( 2 )
+disabled = true
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource( 38 )
@@ -476,6 +562,7 @@ anims/fly_up = SubResource( 44 )
 anims/hurt = SubResource( 45 )
 anims/idle = SubResource( 46 )
 anims/land = SubResource( 47 )
+anims/missile = SubResource( 133 )
 anims/neckattack = SubResource( 48 )
 anims/puke = SubResource( 49 )
 anims/screetch = SubResource( 50 )
@@ -521,7 +608,7 @@ use_parent_material = true
 scale = Vector2( 3, 3 )
 frames = SubResource( 125 )
 animation = "fly"
-frame = 2
+frame = 1
 playing = true
 
 [node name="dash" type="AudioStreamPlayer2D" parent="."]
@@ -538,16 +625,6 @@ attenuation = 1.03527
 bus = "New Bus"
 area_mask = 0
 
-[node name="ColorRect2" type="ColorRect" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-color = Color( 0.662745, 0.329412, 0.329412, 1 )
-
-[node name="ColorRect3" type="ColorRect" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-color = Color( 1, 0, 0, 1 )
-
 [node name="Tween" type="Tween" parent="."]
 
 [node name="waittimer" type="Timer" parent="."]
@@ -557,6 +634,8 @@ one_shot = true
 
 [node name="short" type="Timer" parent="."]
 one_shot = true
+
+[node name="beak" type="Node2D" parent="."]
 
 [connection signal="body_entered" from="hurtbox" to="." method="_on_hurtbox_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="IFRAMES"]

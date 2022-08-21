@@ -128,10 +128,11 @@ tracks/2/keys = {
 "values": [ Color( 0.745098, 0.647059, 0.941176, 0.792157 ), Color( 0.745098, 0.647059, 0.941176, 0 ) ]
 }
 
-[node name="KinematicBody2D" type="KinematicBody2D" groups=["owl"]]
+[node name="KinematicBody2D" type="KinematicBody2D" groups=["enemy", "owl"]]
 visible = false
 modulate = Color( 0.745098, 0.647059, 0.941176, 0.792157 )
 self_modulate = Color( 0.745098, 0.647059, 0.941176, 0.686275 )
+collision_layer = 2
 script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

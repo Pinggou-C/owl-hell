@@ -236,7 +236,7 @@ func dash_start():
 	$dash/dash_delay.wait_time = dash_delay
 	$dash/dash_delay.start()
 	can_dash = false
-	print(dashtime)
+	#print(dashtime)
 	$dash/dash.start()
 	$dash/AnimationPlayer.play("dash")
 	
@@ -270,7 +270,10 @@ func statemachine(new_value):
 
 
 #taking damage
-func hurt():
+func hurt(heal):
+	hp -= heal
+	if hp == 0:
+		state = 'dead'
 	I_FRAMES(I_frames)
 
 func death():
@@ -278,8 +281,11 @@ func death():
 	$AnimatedSprite.play("death")
 
 func _on_hurtbox_body_entered(body):
-	if body.is_in_group('bullet'):
-		hurt()
+	#print(body)
+	if body.is_in_group('enemy'):
+		hurt(1)
+	if  body.is_in_group('explosion'):
+		hurt(1)
 
 
 
@@ -288,10 +294,10 @@ func _on_hurtbox_body_entered(body):
 func I_FRAMES(time):
 	$I_FRAMES.wait_time = time
 	$I_FRAMES.start()
-	$hurtbox/CollisionShape2D.disabled = true
+	$hurtbox/CollisionShape2D.set_deferred('disabled',true)
 
 func I_frames_end():
-	$hurtbox/CollisionShape2D.disabled = false
+	$hurtbox/CollisionShape2D.set_deferred('disabled',false)
 
 
 

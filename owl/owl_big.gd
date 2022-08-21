@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 #curruption 0-8
-var corruption = 8
+var corruption = 0
 const max_hp = 50
 var hp = 1
 const THRESHOLD = 3
@@ -33,9 +33,10 @@ onready var owl = preload("res://owl/owl_small.tscn")
 onready var ind = preload("res://indicator.tscn")
 onready var feather = preload("res://owl/feather.tscn")
 onready var ghost = preload("res://owl/ghostowl.tscn")
+onready var hissile = preload("res://owl/hissil2e.tscn")
 #attacks
-var patterns = {'start':['swoop','screech', 'swoop', 'fly'],
- 'corruptstart':['swoop','swoop', 'feather', 'timer'],
+var patterns = {'start':['fly', 'feather'],
+ 'corruptstart':['missile','missile', 'feather', 'timer'],
  'high_hp':['screech', 'cross', 'feather', 'swoop', 'wait'],
  'high_hp2':['screech', 'fly', 'missile', 'swoop','wait'],
  'mid_hp':['screech', 'missile', 'fly', 'conferge', 'swoop','wait'],
@@ -44,7 +45,7 @@ var patterns = {'start':['swoop','screech', 'swoop', 'fly'],
  'low_hp2':['screech','feather', 'conferge','fly', 'missile', 'swoop','wait']}
 
 #states attacktimemin and max and delay and damage, and can gounded
-var attacks = {'timer':[1.0, 2.0, 0.0, 0.0, null],'fly':[3.0, 5.0, 1.0, 0.0, null], 'swoop':[3.0, 5.0, 2.0, 2.0, null], 'screech':[2.0, 2.0, 0.5, 0.0, true], 'feather':[4.0, 4.0, 6.0, 1.0, null], 'cross':[1.0, 1.0, 2.0, 1.0, null], 'longscreech':[2.0, 2.0, 0.33, 0.0, true], 'missile':[3.0, 5.0, 1.5, 2.0, true], 'bomb':[4.0, 7.0, 1, 2.0, true], 'conferge':[1.0, 1.5, 0.5, 0.0, null], 'encircle':[1.0, 1.0, 0.33, 0.0, null]}
+var attacks = {'timer':[1.0, 2.0, 0.0, 0.0, null],'fly':[3.0, 5.0, 1.0, 0.0, null], 'swoop':[3.0, 5.0, 2.0, 2.0, null], 'screech':[2.0, 2.0, 0.5, 0.0, true], 'feather':[7.0, 7.0, 3.0, 1.0, null], 'cross':[1.0, 1.0, 2.0, 1.0, null], 'longscreech':[2.0, 2.0, 0.33, 0.0, true], 'missile':[8.0, 8.0, 2.5, 2.0, true], 'bomb':[4.0, 7.0, 1, 2.0, true], 'conferge':[1.0, 1.5, 0.5, 0.0, null], 'encircle':[1.0, 1.0, 0.33, 0.0, null]}
 var current_pattern = null# setget pattern#, attackchange
 var curpat = null
 var current_attack
@@ -70,6 +71,8 @@ var crossy2 = []
 
 func _ready():
 	player = get_parent().get_child(0)
+	corruption = get_parent().corruption
+	print(corruption)
 	for i in range(4000/200):
 		var ow = owl.instance()
 		get_parent().call_deferred('add_child',ow)
@@ -88,6 +91,9 @@ func _ready():
 		crossx1.append(own)
 		crossx2.append(owns)
 	#hp = max_hp
+	
+
+func start():
 	if corruption == 8:
 		current_pattern = patterns['corruptstart']
 		pattern(patterns['corruptstart'])
@@ -101,7 +107,9 @@ func _ready():
 	
 	moving_around(null, 'side_to_side')
 
+
 func _physics_process(delta):
+	#print(global_position)
 	#print(movepattern, moving, grounded, current_attack)
 	if grounded != true && moving == true:
 		if movepattern == 'static':
@@ -175,12 +183,16 @@ func attack(attack):
 	print(attack)
 	if attack != 'wait':
 		if attacks[attack][4] == true && grounded == false:
+
 			flying(false, attack)
 		elif attacks[attack][4] == false && grounded == true:
-			flying(true, attack)
+			if attack == 'swoop' || attack == 'fly':
+				flying(true, attack, null, null, true)
+			else:
+				flying(true, attack)
 		else:
-			$attacktime.wait_time = attacks[attack][2]+attacks[attack][0] - attacks[attack][0]*(corruption/12)
-			$attacktime.start()
+			#$attacktime.wait_time = attacks[attack][0]
+			#$attacktime.start()
 			call(attack)
 			
 			if attacks[attack][4] == null && grounded == true:
@@ -194,17 +206,20 @@ func attack(attack):
 		$waittimer.wait_time = 12 - 4*(pow(corruption, 2)/64)
 		$waittimer.start()
 		waiting = true
+	last_attack = attack
 
 func attack_end():
 	attacking = false
 	if last_attack == 'screech'||last_attack == 'longscreech':
 		screech = false
 		player.stop_push()
-	move(current_pattern)
-	if last_attack == 'fly' || 'swoop':
-		if last_attack == 'fly':
-			landing()
+	if last_attack == 'fly' || last_attack == 'swoop':
+		landing()
 		$AnimationPlayer.play('land')
+	if last_attack != 'wait':
+		yield(get_tree().create_timer(attacks[last_attack][2] - attacks[last_attack][2]*(corruption/12)), 'timeout')
+	move(current_pattern)
+	
 	
 	
 
@@ -217,7 +232,7 @@ func move(pattern):
 			var attack = pattern[pattern_nr]
 			pattern_nr += 1
 			attack(attack)
-			last_attack = attack
+			#last_attack = attack
 		else:
 			newpattern()
 
@@ -242,7 +257,8 @@ func pattern(new_value):
 #func attackchange():
 #	return current_pattern
 func timer():
-	pass
+	yield(get_tree().create_timer(attacks['timer'][0]), 'timeout')
+	attack_end()
 #attacks
 func fly():
 	moving = false
@@ -251,9 +267,12 @@ func fly():
 	movsid = 0
 	rng.randomize()
 	var x = rng.randi_range(96, 2700)
-	var y = rng.randi_range(128, 2700)
+	var y = rng.randi_range(256, 2700)
 	$AnimationPlayer.play('fly_up')
+	print('flying')
 	landtarget = Vector2(x, y)
+	yield(get_tree().create_timer(attacks['fly'][0]), 'timeout')
+	attack_end()
 	
 func landing():
 	grounded = false
@@ -416,11 +435,9 @@ func swoop():
 		ined.ready(3.0 + (corruption-8)/4, dott, startpos, endpos, corruption)
 		ined.global_position = startpos
 		ined.look_at(endpos)
-		$ColorRect2.rect_position = startpos - global_position
-		$ColorRect3.rect_position = endpos - global_position
 	rng.randomize()
 	var x = rng.randi_range(96, 2700)
-	var y = rng.randi_range(128, 2700)
+	var y = rng.randi_range(256, 2700)
 	if current_pattern.size() == pattern_nr+1:
 		x = 1500
 		y = 1500
@@ -429,7 +446,9 @@ func swoop():
 	$Tween.interpolate_property($anim, 'modulate', Color(1, 1, 1, 0), Color(1, 1, 1, 1), 0.6, Tween.TRANS_LINEAR, Tween.EASE_IN)
 	$Tween.start()
 	$hurtbox/CollisionShape2D.disabled = false
-	landing()
+	attack_end()
+
+
 	
 func screech():
 	print('ha')
@@ -437,11 +456,13 @@ func screech():
 	screech = true
 	print(screech)
 	player.push(self, 50000)
-	
+	yield(get_tree().create_timer(attacks['screech'][0]), 'timeout')
+	attack_end()
 		
 
 func longscreech():
-	print('flyl')
+	yield(get_tree().create_timer(attacks['longscreech'][0]), 'timeout')
+	attack_end()
 
 func cross():
 	rng.randomize()
@@ -465,6 +486,9 @@ func cross():
 			i.starttt()
 		for i in crossy2:
 			i.starttt()
+	yield(get_tree().create_timer(attacks['cross'][0]), 'timeout')
+	attack_end()
+
 func feather():
 	var nru = 1
 	if hp / max_hp * 100 >= 60:
@@ -482,25 +506,41 @@ func feather():
 				var feth = feather.instance()
 				get_parent().add_child(feth)
 				feth.position = $wingtip.global_position
-				feth.summon(1200, Vector2(0, 1), 10, Vector2(0, 0), "feather", 'enemy', 0.4 - ((corruption-8.0)/32.0) + 0.2/nru)
+				print(corruption)
+				feth.summon(1200, Vector2(0, 1), 10, Vector2(0, 0), "feather", 'enemy', 0.4 - ((corruption-8.0)/32.0) + 0.2/nru, corruption)
 				feth.look_at(get_parent().get_child(0).get_global_position()) 
 				feth.rotate((i-2)*0.25)
 		yield(get_tree().create_timer(2-(0.3 +  0.3/nru)), 'timeout')
+	attack_end()
 
 func conferge():
-	print('flyc')
+	yield(get_tree().create_timer(attacks['conferge'][0]), 'timeout')
+	attack_end()
 
 func encircle():
-	print('flye')
+	yield(get_tree().create_timer(attacks['encircle'][0]), 'timeout')
+	attack_end()
+
 func missile():
-	print('flym')
+	for i in range(4):
+		$AnimationPlayer.play('missile')
+		yield(get_tree().create_timer(0.9), 'timeout')
+	yield(get_tree().create_timer(attacks['missile'][0]-0.9*4), 'timeout')
+	attack_end()
+
+func summon_missile():
+	var miss = hissile.instance()
+	get_parent().add_child(miss)
+	miss.summon($beak.get_global_position(), corruption, player, 15)
+
 
 func bomb():
-	print('flyb')
+	yield(get_tree().create_timer(attacks['bomb'][0]), 'timeout')
+	attack_end()
 
 
 #moving
-func flying(airborn, attack = null, movingg = null, pat= null):
+func flying(airborn, attack = null, movingg = null, pat= null, away = false):
 	print('fly')
 	if attacking != true:
 		print('fly')
@@ -508,16 +548,28 @@ func flying(airborn, attack = null, movingg = null, pat= null):
 			print('land')
 			landing = true
 			#$anim.play('land')
-			$Tween2.interpolate_property(self, 'position:y', position.y, position.y - 150, .4, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-			$Tween2.start()
+			if away == false:
+				$Tween2.interpolate_property(self, 'position:y', position.y, position.y + 150, .4, Tween.TRANS_LINEAR, Tween.EASE_IN)
+				$Tween2.start()
+			else:
+				pass
+				#yield(get_tree().creat_trimer(0.2), 'timeout')
+				#$Tween2.interpolate_property(self, 'position:y', position.y, position.y + 150, .4, Tween.TRANS_LINEAR, Tween.EASE_IN)
+				#$#Tween2.start()
 			grounded = true
 			moving = false
 		elif grounded == true && airborn == true:
 			print('fly')
 			landing = false
-			#$anim.play('fly')
-			$Tween2.interpolate_property(self, 'position:y', position.y, position.y + 150, .33, Tween.TRANS_LINEAR, Tween.EASE_OUT)
-			$Tween2.start()
+			#$anim.play('fly_up')
+			if away == false:
+				$Tween2.interpolate_property(self, 'position:y', position.y, position.y - 150, .33, Tween.TRANS_LINEAR, Tween.EASE_IN)
+				$Tween2.start()
+			else:
+				pass
+				#yield(get_tree().creat_trimer(0.1), 'timeout')
+				#$Tween2.interpolate_property(self, 'position:y', position.y, position.y - 150, .33, Tween.TRANS_LINEAR, Tween.EASE_IN)
+				#$Tween2.start()
 			grounded = false
 			moving = true
 		if attack !=null:
@@ -550,13 +602,13 @@ func moving_around(target = null, patter = 'static'):
 		tt = Vector2(1500, 1500)
 	if target == null&& pattern == 'static':
 		tt =  playpos+Vector2((rng.randi_range(0, 1)*2-1)*750,(rng.randi_range(0, 1)*2-1)*750)
-		if tt.x <0:
+		if tt.x <100:
 			tt.x = playpos.x+750
-		elif tt.x >3000:
+		elif tt.x >2900:
 			tt.x = playpos.x-750
-		if tt.y <0:
+		if tt.y <200:
 			tt.y = playpos.x+750
-		elif tt.y >3000:
+		elif tt.y >2900:
 			tt.y = playpos.x-750
 	if grounded == true:
 		flying(true, null, tt, pattern)
@@ -565,19 +617,19 @@ func moving_around(target = null, patter = 'static'):
 			tt = Vector2(1500, 1500)
 		if target == null&& pattern == 'static':
 			tt =  playpos+Vector2((rng.randi_range(0, 1)*2-1)*750,(rng.randi_range(0, 1)*2-1)*750)
-			if tt.x <0:
+			if tt.x <100:
 				tt.x = playpos.x+750
-			elif tt.x >3000:
+			elif tt.x >2900:
 				tt.x = playpos.x-750
-			if tt.y <0:
+			if tt.y <200:
 				tt.y = playpos.x+750
-			elif tt.y >3000:
+			elif tt.y >2900:
 				tt.y = playpos.x-750
 		if pattern == 'static':
 			movetarget = tt
 		if pattern == 'side_to_side':
 			
-			if playpos.y < 628:
+			if playpos.y < 728:
 				mov = 1
 			else:
 				mov = -1
@@ -586,7 +638,7 @@ func moving_around(target = null, patter = 'static'):
 				if playpos.x + 600 > 3000:
 					movsid = 3000 - playpos.x - 100
 			else:
-				movsid = -600
+				movsid = -500
 				if playpos.x - 600 < 0:
 					movsid = -playpos.x + 100
 		
@@ -643,6 +695,8 @@ func closeout(body):
 func _on_hurtbox_body_entered(body):
 	if  body.is_in_group('player_weapons'):
 		hurt(1)
+	if  body.is_in_group('explosions'):
+		hurt(2)
 
 
 func _on_waittimer_timeout():
@@ -651,3 +705,9 @@ func _on_waittimer_timeout():
 	move(current_pattern)
 	waiting = false
 	threshold = 0
+
+
+func _on_Area2D_body_entered():
+	start()
+	get_parent().get_child(1).get_child(0).set_deferred('disabled', true)
+		
