@@ -1,40 +1,68 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://player/weapons/sword.gd" type="Script" id=1]
+[ext_resource path="res://swor.png" type="Texture" id=2]
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 165, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 132, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 99, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 33, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 66, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 231, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 264, 54, 33 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 165, 54, 33 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [  ],
-"loop": true,
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 10 ), SubResource( 9 ), SubResource( 8 ), SubResource( 12 ), SubResource( 13 ), SubResource( 5 ) ],
+"loop": false,
 "name": "attack",
+"speed": 16.0
+}, {
+"frames": [ SubResource( 11 ) ],
+"loop": true,
+"name": "idle",
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32, 5.5 )
-
 [sub_resource type="Animation" id=3]
 resource_name = "attack"
-tracks/0/type = "value"
-tracks/0/path = NodePath("StaticBody2D/CollisionShape2D:disabled")
+length = 0.6
+tracks/0/type = "method"
+tracks/0/path = NodePath("AnimatedSprite")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ false, true ]
-}
-tracks/1/type = "method"
-tracks/1/path = NodePath("AnimatedSprite")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0.1, 1 ),
+"times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "values": [ {
 "args": [ "attack", false ],
@@ -44,30 +72,47 @@ tracks/1/keys = {
 "method": "play"
 } ]
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("StaticBody2D/CollisionPolygon2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1, 0.6 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
 
 [sub_resource type="Animation" id=4]
 resource_name = "idle"
 
 [node name="sword" type="Node2D" groups=["player"]]
+scale = Vector2( 4, 4 )
+z_index = 4096
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 20, 0 )
+rotation = 1.5708
 frames = SubResource( 2 )
-
-[node name="ColorRect" type="ColorRect" parent="."]
-margin_left = -2.0
-margin_top = -1.0
-margin_right = 54.0
-margin_bottom = 10.0
-color = Color( 0, 0, 0, 1 )
+animation = "idle"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." groups=["player", "player_weapons"]]
-collision_layer = 2
+position = Vector2( 20, 0 )
+rotation = 1.5708
+collision_layer = 4
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 22, 4.5 )
-shape = SubResource( 1 )
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+position = Vector2( 12.1828, 7.74265 )
+rotation = -0.764454
+polygon = PoolVector2Array( -8.73423, 3.06474, -21.0042, -8.70169, -23.6433, -33.4006, -16.7219, -40.6182, -3.24537, -38.7787, 10.4088, -28.4558, 22.0459, -13.1398, 23.7263, -0.444256, 17.497, 6.05159 )
+disabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/attack = SubResource( 3 )

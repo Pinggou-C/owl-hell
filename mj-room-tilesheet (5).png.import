@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Untitled.png-30da513a925d9064453decddf41ecbd4.stex"
+path="res://.import/mj-room-tilesheet (5).png-f4b7762d4656bf1b8c962d1e8a7ba457.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Untitled.png"
-dest_files=[ "res://.import/Untitled.png-30da513a925d9064453decddf41ecbd4.stex" ]
+source_file="res://mj-room-tilesheet (5).png"
+dest_files=[ "res://.import/mj-room-tilesheet (5).png-f4b7762d4656bf1b8c962d1e8a7ba457.stex" ]
 
 [params]
 

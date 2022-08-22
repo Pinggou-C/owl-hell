@@ -1,7 +1,7 @@
 extends Node2D
 
 var named = "shortsword"
-var delay = 0.4
+var delay = 0.2
 var player
 var damage = 8
 

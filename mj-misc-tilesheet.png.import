@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Untitled.png-30da513a925d9064453decddf41ecbd4.stex"
+path="res://.import/mj-misc-tilesheet.png-42b17af1cfbf0c929e6c9bb8ab65cc84.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Untitled.png"
-dest_files=[ "res://.import/Untitled.png-30da513a925d9064453decddf41ecbd4.stex" ]
+source_file="res://mj-misc-tilesheet.png"
+dest_files=[ "res://.import/mj-misc-tilesheet.png-42b17af1cfbf0c929e6c9bb8ab65cc84.stex" ]
 
 [params]
 

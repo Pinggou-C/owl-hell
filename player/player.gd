@@ -10,7 +10,7 @@ var can_dash = true
 
 #health
 const I_frames = 0.25
-const max_hp = 10
+const max_hp = 100
 var hp
 
 #physics
@@ -54,11 +54,20 @@ func _ready():
 	for i in range(1,10):
 		var wap = get("weapon" + String(i)).instance()
 		$weapons.add_child(wap)
-		wap.position = $weaponaccess/weaponpos.position
+		wap.global_position = $weaponaccess/weaponpos.global_position
 		wap.player = self
 		if i != current_weapon_nr:
 			wap.visible = false
-
+func ready():
+	hp = max_hp
+	global_position = Vector2(1580, 3400)
+	I_FRAMES(5.0)
+	can_dash = true
+	velocity = Vector2.ZERO
+	direction = Vector2.ZERO
+	is_attacking = false
+	switching_weapons = false
+	push = null
 
 
 #physics
@@ -281,11 +290,15 @@ func death():
 	$AnimatedSprite.play("death")
 
 func _on_hurtbox_body_entered(body):
-	#print(body)
-	if body.is_in_group('enemy'):
+	print(body)
+	if body.is_in_group('feather'):
+		controller._freeze_frame(0, 0.75)
 		hurt(1)
-	if  body.is_in_group('explosion'):
+	elif body.is_in_group('enemy'):
 		hurt(1)
+	elif  body.is_in_group('explosion'):
+		hurt(1)
+	
 
 
 

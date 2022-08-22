@@ -32,6 +32,7 @@ func _physics_process(delta):
 
 func explode():
 	set_physics_process(false)
+	controller.shake(0.2)
 	#print('explode2')
 	speed = 0
 	$Node2D/ex.emitting = true
@@ -48,6 +49,11 @@ func explode():
 
 func _on_hurtbox_body_entered(body):
 	if !body.is_in_group('projectile') && !body.is_in_group('explosion'):
+		if body.is_in_group('trueplayer'):
+			controller._freeze_frame(0, 0.075)
+		if body.is_in_group('owl'):
+			controller._freeze_frame(0, 0.1)
+		
 		explode()
 
 
