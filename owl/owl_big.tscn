@@ -586,8 +586,9 @@ animations = [ {
 } ]
 
 [node name="owl_big" type="KinematicBody2D" groups=["enemy", "owl"]]
-light_mask = 4
+light_mask = 512
 material = SubResource( 132 )
+z_index = 1039
 collision_layer = 0
 script = ExtResource( 1 )
 __meta__ = {
@@ -600,6 +601,7 @@ __meta__ = {
 shape = SubResource( 1 )
 
 [node name="hurtbox" type="Area2D" parent="."]
+z_index = 1039
 collision_layer = 4
 collision_mask = 4
 

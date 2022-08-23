@@ -2,12 +2,12 @@ extends KinematicBody2D
 
 #curruption 0-8
 var corruption = 0
-const max_hp = 1
+const max_hp = 33
 var hp = 1
 const THRESHOLD = 3
 var threshold = 0
 
-
+var parent = null
 
 var screech = false
 var grounded = true
@@ -35,8 +35,8 @@ onready var feather = preload("res://owl/feather.tscn")
 onready var ghost = preload("res://owl/ghostowl.tscn")
 onready var hissile = preload("res://owl/hissil2e.tscn")
 #attacks
-var patterns = {'start':['missile', 'feather'],
- 'corruptstart':['feather','missile', 'feather', 'timer'],
+var patterns = {'start':['missile','missile','missile', 'feather'],
+ 'corruptstart':['cross','missile','missile', 'feather', 'timer'],
  'high_hp':['screech', 'cross', 'feather', 'swoop', 'wait'],
  'high_hp2':['screech', 'fly', 'missile', 'swoop','wait'],
  'mid_hp':['screech', 'missile', 'fly', 'conferge', 'swoop','wait'],
@@ -70,24 +70,23 @@ var crossy2 = []
 
 
 func _ready():
+	parent = get_parent().get_parent()
 	ready()
-	
-	print(corruption)
-	for i in range(4000/200):
+	for i in range(3300/300):
 		var ow = owl.instance()
-		get_parent().call_deferred('add_child',ow)
-		ow.summon(Vector2(i*200, 0-rng.randf_range(0, 200)),Vector2(0, 1), 40000, 12.0, 0.0, 0.0, 0.0, 0.0, false)
+		parent.call_deferred('add_child',ow)
+		ow.summon(Vector2(i*300, 0-rng.randf_range(0, 300)),Vector2(0, 1), 40000, 12.0, 0.0, 0.0, 0.0, 0.0, false)
 		var ows = owl.instance()
-		get_parent().call_deferred('add_child',ows)
-		ows.summon(Vector2(i*200+125, 3000+rng.randf_range(0, 200)),Vector2(0, -1), 40000, 12.0, 0.0, 0.0, 0.0, 0.0, false)
+		parent.call_deferred('add_child',ows)
+		ows.summon(Vector2(i*300+125, 3000+rng.randf_range(0, 300)),Vector2(0, -1), 40000, 12.0, 0.0, 0.0, 0.0, 0.0, false)
 		crossy1.append(ow)
 		crossy2.append(ows)
 		var own = owl.instance()
-		get_parent().call_deferred('add_child',own)
-		own.summon(Vector2(0-rng.randf_range(0, 200), i*200),Vector2(1, 0), 40000, 12.0, 120.0, 1.0, -120.0, 1.0, false)
+		parent.call_deferred('add_child',own)
+		own.summon(Vector2(0-rng.randf_range(0, 300), i*300),Vector2(1, 0), 40000, 12.0, 120.0, 1.0, -120.0, 1.0, false)
 		var owns = owl.instance()
-		get_parent().call_deferred('add_child',owns)
-		owns.summon(Vector2(3000+rng.randf_range(0, 200), i*200+125),Vector2(-1, 0), 40000, 12.0, 120.0, 1.0, -120.0, 1.0, false)
+		parent.call_deferred('add_child',owns)
+		owns.summon(Vector2(3000+rng.randf_range(0, 300), i*300+125),Vector2(-1, 0), 40000, 12.0, 120.0, 1.0, -120.0, 1.0, false)
 		crossx1.append(own)
 		crossx2.append(owns)
 	#hp = max_hp
@@ -106,8 +105,8 @@ func ready():
 	$anim.position = Vector2(0, 0)
 	hp = max_hp
 	global_position = Vector2(1500, 1500)
-	player = get_parent().get_child(0)
-	corruption = get_parent().corruption
+	player = parent.get_child(0)
+	corruption = parent.corruption
 	if corruption < 8:
 		$anim.play('idle')
 	else:
@@ -153,18 +152,14 @@ func start():
 		pattern(patterns['corruptstart'])
 		curpat = 'corruptstart'
 	else:
-		#current_pattern = patterns['start']
-		#print('g')
 		pattern(patterns['start'])
-		#print(current_pattern)
 		curpat = 'start'
 	
 	moving_around(null, 'side_to_side')
 
 
 func _physics_process(delta):
-	#print(global_position)
-	#print(movepattern, moving, grounded, current_attack)
+
 	if grounded != true && moving == true:
 		if movepattern == 'static':
 			velocity += accel*global_position.direction_to(movetarget)*delta
@@ -187,7 +182,7 @@ func _physics_process(delta):
 				velocity = velocity.normalized()*speed
 		
 			position = position + velocity*delta
-	#print(screech)
+
 
 
 #player interactions
@@ -195,14 +190,11 @@ func hurt(damage):
 	if I_FrameD == false:
 		print(hp)
 		I_FrameD = true
-		#print(waiting)
 		$Timer.wait_time = I_frames
 		$Timer.start()
 		hp -= damage
 		threshold += damage
-		#print(hp)
 		if waiting == true:
-			print('wait')
 			threshold += 1
 			if !$waittimer.is_stopped():
 				$short.wait_time = 1.5 - 1*(pow(corruption, 2)/64)
@@ -215,7 +207,7 @@ func hurt(damage):
 			die()
 
 func die():
-	get_parent().restart()
+	parent.restart()
 		
 
 func normaldie():
@@ -232,7 +224,6 @@ func IFRAMES():
 #actions
 func attack(attack):
 	if hp > 0:
-		print(attack)
 		if attack != 'wait':
 			if attacks[attack][4] == true && grounded == false:
 
@@ -324,7 +315,6 @@ func fly():
 	var x = rng.randi_range(96, 2700)
 	var y = rng.randi_range(256, 2700)
 	$AnimationPlayer.play('fly_up')
-	print('flying')
 	landtarget = Vector2(x, y)
 	yield(get_tree().create_timer(attacks['fly'][0]), 'timeout')
 	if hp > 0:
@@ -489,7 +479,7 @@ func swoop():
 			var ined = ind.instance()
 			ined.get_child(0).rect_size = Vector2(lenth, 300)
 			ined.get_child(0).rect_position = Vector2(0, -150)
-			get_parent().add_child(ined)
+			parent.add_child(ined)
 
 			ined.ready(3.0 + (corruption-8)/4, dott, startpos, endpos, corruption)
 			ined.global_position = startpos
@@ -512,14 +502,12 @@ func swoop():
 	
 func screech():
 	if hp > 0:
-		print('ha')
 		if corruption < 8:
 			$anim.play('screech')
 		else:
 			$anim.play('corscreech')
 		$AnimationPlayer.play("screetch")
 		screech = true
-		print(screech)
 		player.push(self, 50000)
 		yield(get_tree().create_timer(attacks['screech'][0]), 'timeout')
 		if hp > 0:
@@ -534,24 +522,24 @@ func cross():
 	rng.randomize()
 	if rng.randi_range(0, 1) == 0:
 		for i in crossy1:
-			i.starttt()
+			i.starttt(corruption)
 		for i in crossy2:
-			i.starttt()
+			i.starttt(corruption)
 		yield(get_tree().create_timer(2), "timeout")
 		for i in crossx1:
-			i.starttt()
+			i.starttt(corruption)
 		for i in crossx2:
-			i.starttt()
+			i.starttt(corruption)
 	else:
 		for i in crossx1:
-			i.starttt()
+			i.starttt(corruption)
 		for i in crossx2:
-			i.starttt()
+			i.starttt(corruption)
 		yield(get_tree().create_timer(2), "timeout")
 		for i in crossy1:
-			i.starttt()
+			i.starttt(corruption)
 		for i in crossy2:
-			i.starttt()
+			i.starttt(corruption)
 	yield(get_tree().create_timer(attacks['cross'][0]), 'timeout')
 	if hp > 0:
 		attack_end()
@@ -565,18 +553,16 @@ func feather():
 			nru = 2
 		elif hp / max_hp * 100>= 0:
 			nru = 3
-		print(nru)
 		for h in range(4):
 			if hp < 0:
 				return
 			for g in range(nru):
 				for i in range(5):
 					var feth = feather.instance()
-					get_parent().add_child(feth)
+					parent.add_child(feth)
 					feth.position = $wingtip.global_position
-					print(corruption)
 					feth.summon(1200, Vector2(0, 1), 10, Vector2(0, 0), "feather", 'enemy', 0.4 - ((corruption-8.0)/32.0) + 0.2/nru, corruption)
-					feth.look_at(get_parent().get_child(0).get_global_position()) 
+					feth.look_at(parent.get_child(0).get_global_position()) 
 					feth.rotate((i-2)*0.25)
 				yield(get_tree().create_timer(0.3 +  0.3/nru), 'timeout')
 			yield(get_tree().create_timer(2-(0.3 +  0.3/nru)), 'timeout')
@@ -604,7 +590,7 @@ func missile():
 
 func summon_missile():
 	var miss = hissile.instance()
-	get_parent().add_child(miss)
+	parent.add_child(miss)
 	miss.summon($beak.get_global_position(), corruption, player, 15)
 
 
@@ -616,11 +602,8 @@ func bomb():
 #moving
 func flying(airborn, attack = null, movingg = null, pat= null, away = false):
 	if hp > 0:
-		print('fly')
 		if attacking != true:
-			print('fly')
 			if grounded == false && airborn == false:
-				print('land')
 				landing = true
 				#$anim.play('land')
 				if away == false:
@@ -638,7 +621,6 @@ func flying(airborn, attack = null, movingg = null, pat= null, away = false):
 				else:
 					$anim.play('coridle')
 			elif grounded == true && airborn == true:
-				print('fly')
 				landing = false
 				#$anim.play('fly_up')
 				if away == false:
@@ -656,13 +638,10 @@ func flying(airborn, attack = null, movingg = null, pat= null, away = false):
 				else:
 					$anim.play('corfly')
 			if attack !=null:
-				print('flyattack')
 				yield(get_tree().create_timer(0.2), "timeout")
-				print('cont')
 				attack(attack)
 				landing = false
 			if movingg != null:
-				print('flymove')
 				yield(get_tree().create_timer(0.2), "timeout")
 				moving_around(movingg, pat)
 				landing = false
@@ -671,7 +650,6 @@ func flying(airborn, attack = null, movingg = null, pat= null, away = false):
 
 func moving_around(target = null, patter = 'static'):
 	if hp > 0:
-		print(patter)
 		rng.randomize()
 		var pattern = patter
 		var playpos = player.get_global_position()
@@ -681,7 +659,6 @@ func moving_around(target = null, patter = 'static'):
 				pattern = 'static'
 			else:
 				pattern = 'size_to_side'
-		print(tt)
 		if tt == null:
 			tt = Vector2(1500, 1500)
 		if target == null&& pattern == 'static':
@@ -794,5 +771,5 @@ func _on_waittimer_timeout():
 
 func _on_Area2D_body_entered():
 	start()
-	get_parent().get_child(1).get_child(0).set_deferred('disabled', true)
+	
 		

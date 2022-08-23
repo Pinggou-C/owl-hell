@@ -1,10 +1,69 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://owl/owl_small.gd" type="Script" id=1]
+[ext_resource path="res://mj-misc-tilesheet.png" type="Texture" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
 
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 2 )
+region = Rect2( 15, 0, 15, 18 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 2 )
+region = Rect2( 30, 0, 15, 18 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 2 )
+region = Rect2( 45, 0, 15, 18 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 15, 18 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 2 )
+region = Rect2( 60, 0, 15, 18 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 2 )
+region = Rect2( 75, 0, 15, 18 )
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ SubResource( 2 ) ],
+"loop": true,
+"name": "book1",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 3 ) ],
+"loop": true,
+"name": "book2",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 4 ) ],
+"loop": true,
+"name": "book3",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "book4",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 6 ) ],
+"loop": true,
+"name": "book5",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 7 ) ],
+"loop": true,
+"name": "book6",
+"speed": 5.0
+} ]
+
 [node name="owl_small" type="KinematicBody2D" groups=["enemy"]]
+scale = Vector2( 3, 3 )
 collision_layer = 2
 collision_mask = 0
 script = ExtResource( 1 )
@@ -23,6 +82,8 @@ disabled = true
 one_shot = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 8 )
+animation = "book1"
 
 [connection signal="tween_all_completed" from="Tweenin" to="." method="_on_Tweenin_tween_all_completed"]
 [connection signal="tween_all_completed" from="tweenout" to="." method="tweenout_completed"]

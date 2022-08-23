@@ -10,7 +10,7 @@ var can_dash = true
 
 #health
 const I_frames = 0.25
-const max_hp = 100
+const max_hp = 9
 var hp
 
 #physics
@@ -50,6 +50,8 @@ onready var weapon9 = preload("res://player/weapons/sword.tscn")
 #ready
 func _ready():
 	hp = max_hp
+	for i in get_tree().get_nodes_in_group('health'):
+		i.hp(hp)
 	I_FRAMES(5.0)
 	for i in range(1,10):
 		var wap = get("weapon" + String(i)).instance()
@@ -60,6 +62,8 @@ func _ready():
 			wap.visible = false
 func ready():
 	hp = max_hp
+	for i in get_tree().get_nodes_in_group('health'):
+		i.hp(hp)
 	global_position = Vector2(1580, 3400)
 	I_FRAMES(5.0)
 	can_dash = true
@@ -269,6 +273,7 @@ func getstate():
 func statemachine(new_value):
 	state = new_value
 	if new_value == "idle" || "dead":
+		print(new_value)
 		direction = Vector2.ZERO
 		velocity = Vector2.ZERO
 		if new_value == "dead":
@@ -280,24 +285,28 @@ func statemachine(new_value):
 
 #taking damage
 func hurt(heal):
-	hp -= heal
-	if hp == 0:
-		state = 'dead'
-	I_FRAMES(I_frames)
+	if hp> 0:
+		hp = hp - heal
+		print(hp)
+		for i in get_tree().get_nodes_in_group('health'):
+			i.hp(hp)
+		if hp == 0:
+			state = 'dead'
+		I_FRAMES(I_frames)
 
 func death():
+	print('gea')
 	$AnimatedSprite.stop()
+	get_parent().restart(true)
 	$AnimatedSprite.play("death")
 
 func _on_hurtbox_body_entered(body):
-	print(body)
-	if body.is_in_group('feather'):
-		controller._freeze_frame(0, 0.75)
+	if body.is_in_group('feather') || body.is_in_group('explosion') || body.is_in_group('enemy'):
+		if body.is_in_group("feather"):
+			controller._freeze_frame(0, 0.75)
 		hurt(1)
-	elif body.is_in_group('enemy'):
-		hurt(1)
-	elif  body.is_in_group('explosion'):
-		hurt(1)
+		if body.is_in_group('enemy'):
+			body.hit()
 	
 
 

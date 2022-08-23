@@ -35,3 +35,7 @@ func _on_hurtbox_body_entered(body):
 
 func armed():
 	can_exp = true
+
+func hit():
+	explode()
+	speed = 0

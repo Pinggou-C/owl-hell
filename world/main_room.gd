@@ -4,6 +4,14 @@ var on = false
 func _ready():
 	energy = 0.2
 
+
+func reset():
+	energy = 0.2
+	on = false
+	$main_room2.energy = 0.8
+	$StaticBody2D/CollisionShape2D2.set_deferred('disabled', true)
+	$StaticBody2D/LightOccluder2D.visible = false
+
 func light(body):
 	if body.is_in_group('trueplayer') && on == false:
 		on = true

@@ -12,9 +12,9 @@ func _freeze_frame(timescale, duration):
 	start()
 	get_tree().paused = true
 
-func shake(amount):
+func shake(amount, decay):
 	if camera != null:
-		camera.add_trauma(amount)
+		camera.add_trauma(amount, decay)
 
 
 

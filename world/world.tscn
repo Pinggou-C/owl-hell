@@ -1,7 +1,7 @@
-[gd_scene load_steps=74 format=2]
+[gd_scene load_steps=75 format=2]
 
 [ext_resource path="res://player/player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://owl/owl_big.tscn" type="PackedScene" id=2]
+[ext_resource path="res://world/Node2D.gd" type="Script" id=2]
 [ext_resource path="res://world/world.tres" type="TileSet" id=3]
 [ext_resource path="res://mj-room-tilesheet (2).png" type="Texture" id=4]
 [ext_resource path="res://looks/img/artflow_202005041901.png" type="Texture" id=5]
@@ -14,6 +14,7 @@
 [ext_resource path="res://player/Camera2D.gd" type="Script" id=12]
 [ext_resource path="res://mj-misc-tilesheet.png" type="Texture" id=13]
 [ext_resource path="res://world/nest.gd" type="Script" id=14]
+[ext_resource path="res://looks/img/Untitled01.png" type="Texture" id=15]
 
 [sub_resource type="Shader" id=4]
 code = "shader_type canvas_item;
@@ -1327,13 +1328,9 @@ script = ExtResource( 10 )
 use_parent_material = true
 position = Vector2( 1580, 3400 )
 z_index = 4091
-__meta__ = {
-"_edit_group_": true
-}
 dashspeed = 100000
 
 [node name="main_room2" type="Light2D" parent="player"]
-visible = false
 scale = Vector2( 7.59375, 6.84375 )
 texture = ExtResource( 5 )
 texture_scale = 0.75
@@ -1391,10 +1388,7 @@ cell_size = Vector2( 16, 16 )
 format = 1
 tile_data = PoolIntArray( -65486, 4, 0, 50, 5, 0, 147, 4, 0, 65547, 4, 0, 65586, 6, 0, 65683, 5, 0, 131105, 1610612753, 0, 131106, 1610612753, 0, 131122, 3, 0, 131219, 6, 0, 196612, 23, 0, 196619, 5, 0, 196626, 20, 0, 196628, 23, 0, 196629, 23, 0, 196634, 19, 0, 196635, 19, 0, 196640, 21, 0, 196641, 12, 0, 196642, 11, 0, 196643, 13, 0, 196645, 20, 0, 196650, 25, 0, 196654, 19, 0, 196655, 23, 0, 196658, 9, 0, 196660, 22, 0, 196662, 25, 0, 196664, 20, 0, 196665, 20, 0, 196755, 3, 0, 262158, 2, 0, 262177, 11, 0, 262178, 12, 0, 262291, 10, 0, 327691, 6, 0, 327694, 9, 0, 327717, 4, 0, 327827, 9, 0, 393253, 5, 0, 458763, 3, 0, 458789, 6, 0, 458825, 4, 0, 458854, 4, 0, 524325, 3, 0, 524361, 5, 0, 524390, 5, 0, 589835, 10, 0, 589861, 9, 0, 589897, 6, 0, 589926, 6, 0, 655433, 3, 0, 720907, 10, 0, 720969, 10, 0, 786505, 10, 0, 851979, 9, 0, 852041, 9, 0, 1179763, 4, 0, 1245211, 4, 0, 1245299, 5, 0, 1310747, 5, 0, 1310835, 6, 0, 1376283, 6, 0, 1376308, 1610612753, 0, 1376309, 1610612753, 0, 1376310, 1610612753, 0, 1441819, 3, 0, 1441844, 12, 0, 1441845, 12, 0, 1441846, 31, 0, 1507355, 10, 0, 1507370, 4, 0, 1507380, 11, 0, 1507381, 31, 0, 1507382, 11, 0, 1572891, 9, 0, 1638442, 5, 0, 1769514, 6, 0, 1900586, 3, 0, 2031658, 9, 0, 4390947, 20, 0, 4456482, 16, 0 )
 
-[node name="owl_big2" parent="." instance=ExtResource( 2 )]
-light_mask = 256
-position = Vector2( 1500, 1500 )
-z_index = 1039
+[node name="owl" type="Node2D" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchor_left = 0.569
@@ -1560,6 +1554,66 @@ margin_bottom = 3485.0
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="Node2D" type="Node2D" parent="Camera2D2/CanvasLayer" groups=["health"]]
+light_mask = 512
+scale = Vector2( 2, 2 )
+z_index = 4096
+script = ExtResource( 2 )
+
+[node name="hp1" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 8, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp2" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 48, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp3" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 88, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp4" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 128, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp5" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 168, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp6" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 208, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp7" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 248, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp8" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 288, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
+
+[node name="hp9" type="Sprite" parent="Camera2D2/CanvasLayer/Node2D"]
+position = Vector2( 328, 8 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 15 )
+centered = false
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="body_entered" from="main_room/Area2D" to="main_room" method="light"]

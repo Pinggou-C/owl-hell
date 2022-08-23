@@ -12,7 +12,7 @@ func summon(sped, dir, dam, initialvel, anim = 'arraw', type = 'player', timout 
 	tempvelocity = speed
 	$Tween.interpolate_property(self, 'speed', 0.0, sped, 0.7, Tween.TRANS_EXPO)
 	$Tween.start()
-	print(corruption)
+	#print(corruption)
 	if !corruption == 8:
 		$AnimatedSprite.play("nor")
 		$Particles2D.emitting = true
@@ -41,3 +41,6 @@ func _on_Area2D_body_entered(body):
 func _on_VisibilityNotifier2D_screen_exited():
 	pass
 #	queue_free()
+
+func hit():
+	impact()

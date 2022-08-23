@@ -6,13 +6,15 @@ export var max_roll = 0.1  # Maximum rotation in radians (use sparingly).
 export (NodePath) var target  # Assign the node this camera will follow.
 
 var trauma = 0.0  # Current shake strength.
-var trauma_power = 2  # Trauma exponent. Use [2, 3].
+var trauma_power = 2 # Trauma exponent. Use [2, 3].
 func _ready():
 	controller.camera = self
 	randomize()
 
-func add_trauma(amount):
+func add_trauma(amount, decayy = 0.7):
+	decay = decayy
 	trauma = min(trauma + amount, 1.0)
+
 
 func _process(delta):
 	if target:

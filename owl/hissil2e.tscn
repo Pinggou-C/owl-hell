@@ -157,7 +157,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[node name="hissile" type="KinematicBody2D" groups=["explosion"]]
+[node name="hissile" type="KinematicBody2D" groups=["enemy", "explosion"]]
 scale = Vector2( 3, 3 )
 collision_layer = 6
 collision_mask = 6
@@ -220,7 +220,7 @@ disabled = true
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Node2D"]
 frames = SubResource( 18 )
 animation = "cormove"
-frame = 3
+frame = 1
 playing = true
 flip_h = true
 __meta__ = {
