@@ -1,22 +1,22 @@
 extends KinematicBody2D
 
 #movement
-const speed = 25000
-const acceleration = 400000
-export(int) var dashspeed = 0
+const speed = 20000
+const acceleration = 100000
+export(int) var dashspeed = 15000
 const dashtime = 0.25
 const dash_delay = 0.5
 var can_dash = true
 
 #health
-const I_frames = 0.25
+const I_frames = 0.5
 const max_hp = 9
 var hp
 
 #physics
 var velocity = Vector2.ZERO
 var direction = Vector2.ZERO
-
+var force_direction
 #state
 var states = ['idle', "walk", "dash", "dropdash", "dead"]
 var state = "idle" setget statemachine, getstate
@@ -33,6 +33,7 @@ var switching_weapons = false
 
 #[origin, force]
 var push = null
+var knockback = 0
 
 #weapons
 onready var weapon1 = preload("res://player/weapons/sword.tscn")
@@ -44,7 +45,7 @@ onready var weapon6 = preload("res://player/weapons/sword.tscn")
 onready var weapon7 = preload("res://player/weapons/sword.tscn")
 onready var weapon8 = preload("res://player/weapons/sword.tscn")
 onready var weapon9 = preload("res://player/weapons/sword.tscn")
-
+var knockk = false
 
 
 #ready
@@ -52,7 +53,7 @@ func _ready():
 	hp = max_hp
 	for i in get_tree().get_nodes_in_group('health'):
 		i.hp(hp)
-	I_FRAMES(5.0)
+	#I_FRAMES(5.0)
 	for i in range(1,10):
 		var wap = get("weapon" + String(i)).instance()
 		$weapons.add_child(wap)
@@ -65,7 +66,7 @@ func ready():
 	for i in get_tree().get_nodes_in_group('health'):
 		i.hp(hp)
 	global_position = Vector2(1580, 3400)
-	I_FRAMES(5.0)
+	#I_FRAMES(5.0)
 	can_dash = true
 	velocity = Vector2.ZERO
 	direction = Vector2.ZERO
@@ -76,41 +77,51 @@ func ready():
 
 #physics
 func _physics_process(delta):
-	$weapons.look_at(get_global_mouse_position())
-	var force = Vector2.ZERO
-	if push != null:
-		var dir = ( push[0].get_global_position() - self.get_global_position() ).normalized()
-		var dis = get_global_position().distance_to(push[0].get_global_position())
-		var dist = 0
-		if dis < 500:
-			dist = (600 -dis)/500 +0.05
-		force = dir * dist * push[1]
-		
-	if state != 'walk':
-		if $AnimatedSprite.playing ==true:
-			$AnimatedSprite.stop()
-	if state == "walk":
-		velocity = (direction.normalized() * speed - force) * delta 
-		velocity = move_and_slide(velocity)
-		if velocity.y >0:
-			if $AnimatedSprite.animation == "back" || ($AnimatedSprite.animation== "front"&&$AnimatedSprite.playing ==false):
-				if $AnimatedSprite.playing ==true:
-					$AnimatedSprite.stop()
-				$AnimatedSprite.play("front")
-		if velocity.y <0:
-			if $AnimatedSprite.animation == "front"||($AnimatedSprite.animation== "back"&&$AnimatedSprite.playing ==false):
-				if $AnimatedSprite.playing ==true:
-					$AnimatedSprite.stop()
-				$AnimatedSprite.play("back")
-	elif state == "hurt":
-		pass
-	elif state == "dash":
-		#velocity -= acceleration * delta * direction
-		velocity = (direction.normalized() * dashspeed - force) * delta
-		velocity = move_and_slide(velocity)
-	elif push != null:
-		velocity =  -force * delta
-		velocity = move_and_slide(velocity)
+
+	if knockk == false:
+		$weapons.look_at(get_global_mouse_position())
+		var force = Vector2.ZERO
+		if push != null:
+			var dir = ( push[0].get_global_position() - self.get_global_position() ).normalized()
+			var dis = get_global_position().distance_to(push[0].get_global_position())
+			var dist = 0
+			if dis < 500:
+				dist = (600 -dis)/500 +0.05
+			force = dir * dist * push[1]
+			
+		if state != 'walk':
+			if $AnimatedSprite.playing ==true:
+				$AnimatedSprite.stop()
+		if state == "walk":
+			velocity = (direction.normalized() * speed - force) * delta 
+			velocity = move_and_slide(velocity)
+			if velocity.y >0:
+				if $AnimatedSprite.animation == "back" || ($AnimatedSprite.animation== "front"&&$AnimatedSprite.playing ==false):
+					if $AnimatedSprite.playing ==true:
+						$AnimatedSprite.stop()
+					$AnimatedSprite.play("front")
+			if velocity.y <0:
+				if $AnimatedSprite.animation == "front"||($AnimatedSprite.animation== "back"&&$AnimatedSprite.playing ==false):
+					if $AnimatedSprite.playing ==true:
+						$AnimatedSprite.stop()
+					$AnimatedSprite.play("back")
+		elif state == "hurt":
+			pass
+		elif state == "dash":
+			#velocity -= acceleration * delta * direction
+			velocity = (direction * dashspeed) * delta
+
+			#velocity = move_and_slide(velocity)
+		elif push != null:
+			velocity =  -force * delta
+			#velocity = move_and_slide(velocity)
+		elif state == 'idle':
+			velocity = Vector2(0, 0)
+	else:
+		velocity =  knockback * force_direction * delta * 1000
+		if knockback>0:
+			knockback += delta * -200
+	velocity = move_and_slide(velocity)
 
 
 
@@ -143,7 +154,7 @@ func _input(event):
 
 
 #dash
-		if !is_attacking:
+		if !is_attacking && knockk == false:
 			if Input.is_action_just_pressed("dash") && can_dash:
 				dash_start()
 
@@ -245,6 +256,8 @@ func dash_start():
 	$weapons/swingdelay.start()
 	state = "dash"
 	velocity = direction * dashspeed
+	print(direction, 'dasj')
+	print(velocity)
 	$dash/dash.wait_time = dashtime
 	$dash/dash_delay.wait_time = dash_delay
 	$dash/dash_delay.start()
@@ -272,8 +285,9 @@ func getstate():
 
 func statemachine(new_value):
 	state = new_value
+	print(new_value)
 	if new_value == "idle" || "dead":
-		print(new_value)
+		
 		direction = Vector2.ZERO
 		velocity = Vector2.ZERO
 		if new_value == "dead":
@@ -286,8 +300,10 @@ func statemachine(new_value):
 #taking damage
 func hurt(heal):
 	if hp> 0:
+		$hurtbox/CollisionShape2D.set_deferred('disabled',true)
 		hp = hp - heal
-		print(hp)
+		$dash/AnimationPlayer.play('hurt')
+		#print(hp)
 		for i in get_tree().get_nodes_in_group('health'):
 			i.hp(hp)
 		if hp == 0:
@@ -295,18 +311,27 @@ func hurt(heal):
 		I_FRAMES(I_frames)
 
 func death():
-	print('gea')
+	#print('gea')
 	$AnimatedSprite.stop()
 	get_parent().restart(true)
 	$AnimatedSprite.play("death")
 
 func _on_hurtbox_body_entered(body):
-	if body.is_in_group('feather') || body.is_in_group('explosion') || body.is_in_group('enemy'):
-		if body.is_in_group("feather"):
-			controller._freeze_frame(0, 0.75)
-		hurt(1)
-		if body.is_in_group('enemy'):
-			body.hit()
+
+	if body.is_in_group('feather') or body.is_in_group('explosion') or body.is_in_group('enemy'):
+		print(body.get_groups())
+		if !body.is_in_group('rocket'):
+			hurt(1)
+			$hurtbox/CollisionShape2D.set_deferred('disabled',true)
+			if body.is_in_group('explosion'):
+				#print('hiss')
+				body.get_parent().get_parent().hit()
+				knock(body.get_global_position(), 0.6)
+			else:
+				controller.shake(0.2, 0.7)
+			if body.is_in_group('enemy'):
+				body.hit()
+			controller._freeze_frame( 0,0.1)
 	
 
 
@@ -327,3 +352,14 @@ func push(origin, force):
 	push = [origin, force]
 func stop_push():
 	push = null
+
+
+
+func knock(orientation, force = 40):
+	knockk = true
+
+	force_direction = (global_position - orientation).normalized()#Vector2(cos(ori*PI), sin(ori*PI))
+	print(direction)
+	knockback = 50
+	yield(get_tree().create_timer(.25), 'timeout')
+	knockk = false

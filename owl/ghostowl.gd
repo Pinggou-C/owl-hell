@@ -50,6 +50,9 @@ func _on_Tween_tween_all_completed():
 	end()
 	$start.interpolate_property(self, 'global_position', global_position, endposition + 500*direction, 500/speed)
 	$start.start()
-	
+
+
+func hit():
+	pass
 
 

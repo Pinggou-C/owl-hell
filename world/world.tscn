@@ -1328,6 +1328,7 @@ script = ExtResource( 10 )
 use_parent_material = true
 position = Vector2( 1580, 3400 )
 z_index = 4091
+collision_layer = 512
 dashspeed = 100000
 
 [node name="main_room2" type="Light2D" parent="player"]
@@ -1451,7 +1452,7 @@ occluder = SubResource( 59 )
 [node name="Tween2" type="Tween" parent="main_room"]
 
 [node name="Area2D" type="Area2D" parent="main_room"]
-collision_layer = 512
+collision_layer = 513
 collision_mask = 512
 __meta__ = {
 "_edit_lock_": true

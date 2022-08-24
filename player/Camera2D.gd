@@ -11,9 +11,12 @@ func _ready():
 	controller.camera = self
 	randomize()
 
-func add_trauma(amount, decayy = 0.7):
+func add_trauma(amount, decayy = 0.7, set = false):
 	decay = decayy
-	trauma = min(trauma + amount, 1.0)
+	if set == true:
+		trauma = amount
+	else:
+		trauma = min(trauma + amount, 1.0)
 
 
 func _process(delta):

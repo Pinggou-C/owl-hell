@@ -3,8 +3,8 @@
 [ext_resource path="res://owl/hissile.gd" type="Script" id=1]
 [ext_resource path="res://mj-projectiles-tilesheet.png" type="Texture" id=2]
 
-[sub_resource type="CircleShape2D" id=25]
-radius = 5.0
+[sub_resource type="CapsuleShape2D" id=25]
+radius = 3.0
 
 [sub_resource type="CircleShape2D" id=9]
 radius = 4.39732
@@ -81,9 +81,22 @@ hue_variation_random = 1.0
 
 [sub_resource type="Animation" id=6]
 resource_name = "arm"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Node2D/hurtbox/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
 
 [sub_resource type="Animation" id=7]
 resource_name = "explode"
+step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("CollisionShape2D:disabled")
 tracks/0/interp = 1
@@ -91,7 +104,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1 ),
+"times": PoolRealArray( 0, 0.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
@@ -103,10 +116,22 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1 ),
+"times": PoolRealArray( 0, 0.2 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Node2D/hurtbox/CollisionShape2D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
 }
 
 [sub_resource type="CircleShape2D" id=8]
@@ -157,20 +182,20 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[node name="hissile" type="KinematicBody2D" groups=["enemy", "explosion"]]
+[node name="hissile" type="KinematicBody2D" groups=["enemy", "rocket"]]
 scale = Vector2( 3, 3 )
 collision_layer = 6
 collision_mask = 6
 script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
 shape = SubResource( 25 )
-disabled = true
 
 [node name="Node2D" type="Node2D" parent="."]
 
 [node name="hurtbox" type="Area2D" parent="Node2D"]
-collision_layer = 17
+collision_layer = 0
 collision_mask = 17
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/hurtbox"]
@@ -210,17 +235,18 @@ anims/arm = SubResource( 6 )
 anims/explode = SubResource( 7 )
 
 [node name="explode" type="StaticBody2D" parent="Node2D" groups=["explosion"]]
+position = Vector2( -9.33333, 0 )
 collision_layer = 6
-collision_mask = 6
+collision_mask = 2054
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/explode"]
+position = Vector2( 9.33333, 0 )
 shape = SubResource( 8 )
-disabled = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Node2D"]
 frames = SubResource( 18 )
 animation = "cormove"
-frame = 1
+frame = 2
 playing = true
 flip_h = true
 __meta__ = {

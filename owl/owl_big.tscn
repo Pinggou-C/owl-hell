@@ -423,7 +423,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id=133]
 resource_name = "missile"
-length = 0.9
+length = 0.52
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:scale")
 tracks/0/interp = 1

@@ -36,7 +36,7 @@ onready var ghost = preload("res://owl/ghostowl.tscn")
 onready var hissile = preload("res://owl/hissil2e.tscn")
 #attacks
 var patterns = {'start':['missile','missile','missile', 'feather'],
- 'corruptstart':['cross','missile','missile', 'feather', 'timer'],
+ 'corruptstart':['missile','missile', 'feather', 'timer'],
  'high_hp':['screech', 'cross', 'feather', 'swoop', 'wait'],
  'high_hp2':['screech', 'fly', 'missile', 'swoop','wait'],
  'mid_hp':['screech', 'missile', 'fly', 'conferge', 'swoop','wait'],
@@ -45,7 +45,7 @@ var patterns = {'start':['missile','missile','missile', 'feather'],
  'low_hp2':['screech','feather', 'conferge','fly', 'missile', 'swoop','wait']}
 
 #states attacktimemin and max and delay and damage, and can gounded
-var attacks = {'timer':[1.0, 2.0, 0.0, 0.0, null],'fly':[3.0, 5.0, 1.0, 0.0, null], 'swoop':[3.0, 5.0, 2.0, 2.0, null], 'screech':[2.0, 2.0, 0.5, 0.0, true], 'feather':[7.0, 7.0, 3.0, 1.0, null], 'cross':[1.0, 1.0, 2.0, 1.0, null], 'longscreech':[2.0, 2.0, 0.33, 0.0, true], 'missile':[8.0, 8.0, 2.5, 2.0, true], 'bomb':[4.0, 7.0, 1, 2.0, true], 'conferge':[1.0, 1.5, 0.5, 0.0, null], 'encircle':[1.0, 1.0, 0.33, 0.0, null]}
+var attacks = {'timer':[1.0, 2.0, 0.0, 0.0, null],'fly':[3.0, 5.0, 1.0, 0.0, null], 'swoop':[3.0, 5.0, 2.0, 2.0, null], 'screech':[2.0, 2.0, 0.5, 0.0, true], 'feather':[7.0, 7.0, 3.0, 1.0, null], 'cross':[1.0, 1.0, 2.0, 1.0, null], 'longscreech':[2.0, 2.0, 0.33, 0.0, true], 'missile':[80.0, 80.0, 2.5, 2.0, true], 'bomb':[4.0, 7.0, 1, 2.0, true], 'conferge':[1.0, 1.5, 0.5, 0.0, null], 'encircle':[1.0, 1.0, 0.33, 0.0, null]}
 var current_pattern = null# setget pattern#, attackchange
 var curpat = null
 var current_attack
@@ -578,10 +578,12 @@ func encircle():
 	attack_end()
 
 func missile():
-	for i in range(4):
+	for i in range(80):
+		print(i)
 		if hp > 0:
 			$AnimationPlayer.play('missile')
-			yield(get_tree().create_timer(0.9), 'timeout')
+			#delay must be over 0.52
+			yield(get_tree().create_timer(0.53), 'timeout')
 		else:
 			return
 	yield(get_tree().create_timer(attacks['missile'][0]-0.9*4), 'timeout')
@@ -754,7 +756,6 @@ func closeout(body):
 
 
 func _on_hurtbox_body_entered(body):
-	print(body)
 	if  body.is_in_group('player_weapons'):
 		hurt(1)
 	if  body.is_in_group('explosions'):

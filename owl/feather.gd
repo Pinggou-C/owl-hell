@@ -12,7 +12,6 @@ func summon(sped, dir, dam, initialvel, anim = 'arraw', type = 'player', timout 
 	tempvelocity = speed
 	$Tween.interpolate_property(self, 'speed', 0.0, sped, 0.7, Tween.TRANS_EXPO)
 	$Tween.start()
-	#print(corruption)
 	if !corruption == 8:
 		$AnimatedSprite.play("nor")
 		$Particles2D.emitting = true
