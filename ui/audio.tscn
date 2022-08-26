@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://audio.gd" type="Script" id=1]
+
+[node name="audio" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="song1" type="AudioStreamPlayer" parent="."]
+
+[node name="Tween" type="Tween" parent="song1"]
+
+[node name="song2" type="AudioStreamPlayer" parent="."]
+
+[node name="Tween" type="Tween" parent="song2"]
